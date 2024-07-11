@@ -113,7 +113,9 @@ public sealed class House : Unit
 
     public DateTime PlaceDate { get => _placeDate; set { _placeDate = value; _isDirty = true; } }
     public DateTime ProtectionEndDate { get => _protectionEndDate; set { _protectionEndDate = value; _isDirty = true; } }
-    public DateTime TaxDueDate { get => _protectionEndDate.AddDays(-7); }
+    //Changed Matt
+    //public DateTime TaxDueDate { get => _protectionEndDate.AddDays(-7); }    
+    public DateTime TaxDueDate { get => _protectionEndDate.AddDays(1000000); }
     public uint SellToPlayerId { get => _sellToPlayerId; set { _sellToPlayerId = value; _isDirty = true; } }
     public uint SellPrice { get => _sellPrice; set { _sellPrice = value; _isDirty = true; } }
     public bool AllowRecover { get => _allowRecover; set { _allowRecover = value; _isDirty = true; } }

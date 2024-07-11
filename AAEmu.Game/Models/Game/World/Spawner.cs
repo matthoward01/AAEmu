@@ -8,8 +8,10 @@ public class Spawner<T> where T : GameObject
     public uint UnitId { get; set; } // MemberId | TemplateId
     public string FollowPath { get; set; }
     public WorldSpawnPosition Position { get; set; }
-    public int RespawnTime { get; set; } = 15;
-    public int DespawnTime { get; set; } = 20;
+    public int RespawnTime { get; set; } = 121;
+    //Matt Change
+    public int DespawnTime { get; set; } = 180;
+    //public int DespawnTime { get; set; } = 20;
 
     public virtual T Spawn(uint objId)
     {

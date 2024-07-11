@@ -37,11 +37,15 @@ namespace AAEmu.Game.Core.Managers;
 
 public class HousingManager : Singleton<HousingManager>
 {
+    //Changed Matt
     private const uint ForSaleMarkerDoodadId = 6760;
-    private const int MaxHeavyTaxCounted = 10; // Maximum number of heavy tax buildings to take into account for tax calculation
-    private const int HoursForFailedTaxToReturnHouse = 22;
+    //private const int MaxHeavyTaxCounted = 10; // Maximum number of heavy tax buildings to take into account for tax calculation
+    private const int MaxHeavyTaxCounted = 1; // Maximum number of heavy tax buildings to take into account for tax calculation
+    //private const int HoursForFailedTaxToReturnHouse = 22;
+    private const int HoursForFailedTaxToReturnHouse = 1000000;
     private const double CopperPerCertificate = 1000000.0; // For older versions of AA, 1 sale certificate / 100g
-    private const int TaxPaysForDays = 7; // Number of days 1 week worth of tax pays for
+    //private const int TaxPaysForDays = 7; // Number of days 1 week worth of tax pays for
+    private const int TaxPaysForDays = 1000000; // Number of days 1 week worth of tax pays for
     private Dictionary<uint, House> _houses;
     private Dictionary<ushort, House> _housesTl; // TODO or so mb tlId is id in the active zone? or type of house
     private Dictionary<uint, HousingDecoration> _housingDecorations;
@@ -344,7 +348,8 @@ public class HousingManager : Singleton<HousingManager>
                         house.NumAction = reader.GetInt32("current_action");
                         house.Permission = (HousingPermission)reader.GetByte("permission");
                         house.PlaceDate = reader.GetDateTime("place_date");
-                        house.ProtectionEndDate = reader.GetDateTime("protected_until");
+                        //house.ProtectionEndDate = reader.GetDateTime("protected_until");
+                        house.ProtectionEndDate = DateTime.Now.AddDays(100000);//reader.GetDateTime("protected_until");
                         house.SellToPlayerId = reader.GetUInt32("sell_to");
                         house.SellPrice = reader.GetUInt32("sell_price");
                         house.AllowRecover = reader.GetBoolean("allow_recover");

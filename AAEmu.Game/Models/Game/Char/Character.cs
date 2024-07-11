@@ -402,6 +402,7 @@ public partial class Character : Unit, ICharacter
             var res = formula.Evaluate(parameters);
             res = CalculateWithBonuses(res, UnitAttribute.PersistentHealthRegen);
             res /= 5;
+            res *= 20;
 
             return (int)res;
         }
