@@ -1,6 +1,6 @@
 --Server and Client
     --Mount Run Skill Duration
-    UPDATE buffs SET duration=3600000 WHERE id = 1933;
+    UPDATE buffs SET duration = 3600000 WHERE id = 1933;
     UPDATE buffs SET duration = 3600000 WHERE id = 6174;
 
     --Housing Tax Costs
