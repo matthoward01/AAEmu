@@ -265,51 +265,55 @@ public class SpawnManager : Singleton<SpawnManager>
             }
 
             // Load Doodad spawns
-            var jsonFileName = Path.Combine(worldPath, "doodad_spawns.json");
-
-            if (!File.Exists(jsonFileName))
+            jsonFileName1 = Path.Combine(worldPath, "doodad_spawns.json");
+            jsonFileName2 = Path.Combine(worldPath, "NewDooDadSpawns.json");
+            List<string> jsonFileNameDooDadList = new List<string>() { jsonFileName1, jsonFileName2 };
+            foreach (var fn in jsonFileNameDooDadList)
             {
-                Logger.Info($"World  {world.Name}  is missing  {Path.GetFileName(jsonFileName)}");
-            }
-            else
-            {
-                var contents = FileManager.GetFileContents(jsonFileName);
-
-                if (string.IsNullOrWhiteSpace(contents))
-                    Logger.Warn($"File {jsonFileName} is empty.");
+                if (!File.Exists(fn))
+                {
+                    Logger.Info($"World  {world.Name}  is missing  {Path.GetFileName(fn)}");
+                }
                 else
                 {
-                    if (JsonHelper.TryDeserializeObject(contents, out List<DoodadSpawner> spawners, out _))
+                    var contents = FileManager.GetFileContents(fn);
+
+                    if (string.IsNullOrWhiteSpace(contents))
+                        Logger.Warn($"File {fn} is empty.");
+                    else
                     {
-                        var entry = 0;
-                        foreach (var spawner in spawners)
+                        if (JsonHelper.TryDeserializeObject(contents, out List<DoodadSpawner> spawners, out _))
                         {
-                            entry++;
-                            if (!DoodadManager.Instance.Exist(spawner.UnitId))
+                            var entry = 0;
+                            foreach (var spawner in spawners)
                             {
-                                Logger.Warn($"Doodad Template {spawner.UnitId} (file entry {entry}) doesn't exist - {jsonFileName}");
-                                continue; // TODO ... so mb warn here?
-                            }
-                            spawner.Id = _nextId;
-                            spawner.Position.WorldId = world.Id;
-                            spawner.Position.ZoneId = WorldManager.Instance.GetZoneId(world.Id, spawner.Position.X, spawner.Position.Y);
-                            // Convert degrees from the file to radians for use
-                            spawner.Position.Yaw = spawner.Position.Yaw.DegToRad();
-                            spawner.Position.Pitch = spawner.Position.Pitch.DegToRad();
-                            spawner.Position.Roll = spawner.Position.Roll.DegToRad();
-                            if (doodadSpawners.TryAdd(_nextId, spawner))
-                            {
-                                _nextId++;
+                                entry++;
+                                if (!DoodadManager.Instance.Exist(spawner.UnitId))
+                                {
+                                    Logger.Warn($"Doodad Template {spawner.UnitId} (file entry {entry}) doesn't exist - {fn}");
+                                    continue; // TODO ... so mb warn here?
+                                }
+                                spawner.Id = _nextId;
+                                spawner.Position.WorldId = world.Id;
+                                spawner.Position.ZoneId = WorldManager.Instance.GetZoneId(world.Id, spawner.Position.X, spawner.Position.Y);
+                                // Convert degrees from the file to radians for use
+                                spawner.Position.Yaw = spawner.Position.Yaw.DegToRad();
+                                spawner.Position.Pitch = spawner.Position.Pitch.DegToRad();
+                                spawner.Position.Roll = spawner.Position.Roll.DegToRad();
+                                if (doodadSpawners.TryAdd(_nextId, spawner))
+                                {
+                                    _nextId++;
+                                }
                             }
                         }
+                        else
+                            throw new GameException($"SpawnManager: Parse {fn} file");
                     }
-                    else
-                        throw new GameException($"SpawnManager: Parse {jsonFileName} file");
                 }
             }
 
             // Load Transfers
-            jsonFileName = Path.Combine(worldPath, "transfer_spawns.json");
+            var jsonFileName = Path.Combine(worldPath, "transfer_spawns.json");
 
             if (!File.Exists(jsonFileName))
             {

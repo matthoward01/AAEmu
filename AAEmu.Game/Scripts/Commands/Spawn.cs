@@ -28,7 +28,7 @@ public class Spawn : ICommand
 
     public string GetCommandLineHelp()
     {
-        return "<npc||doodad||remove||create> <unitId> [rotationZ]";
+        return "<npc||doodad||remove||create||createdoo> <unitId> [rotationZ]";
     }
 
     public string GetCommandHelpText()
@@ -40,7 +40,7 @@ public class Spawn : ICommand
     {
         if (args.Length < 2)
         {
-            character.SendMessage("[Spawn] " + CommandManager.CommandPrefix + "spawn <npc||doodad||remove||create> <unitId> [rotationZ]");
+            character.SendMessage("[Spawn] " + CommandManager.CommandPrefix + "spawn <npc||doodad||remove||create||createdoo> <unitId> [rotationZ]");
             return;
         }
 
@@ -129,7 +129,7 @@ public class Spawn : ICommand
                     newNpcSpawner.Position.Pitch = 0;
                     newNpcSpawner.Position.Roll = 0;
                     int.TryParse(unitId.ToString(), out int id);
-                    CreateSpawnJson(id, newNpcSpawner.Position.X, newNpcSpawner.Position.Y, newNpcSpawner.Position.Z, angle);
+                    CreateSpawnJson(id, newNpcSpawner.Position.X, newNpcSpawner.Position.Y, newNpcSpawner.Position.Z, angle, "NewSpawns");
                     SpawnManager.Instance.AddNpcSpawner(newNpcSpawner);
 
                     newNpcSpawner.SpawnAll();
@@ -165,16 +165,45 @@ public class Spawn : ICommand
                     doodadSpawner.Position.Roll = 0;
                     doodadSpawner.Spawn(0, 0, character.ObjId);
                     break;
+                case "createdoo":
+                    if (!DoodadManager.Instance.Exist(unitId))
+                    {
+                        character.SendMessage(ChatType.System, $"[Spawn] Doodad {unitId} don't exist", Color.Red);
+                        return;
+                    }
+                    var doodadNewSpawner = new DoodadSpawner();
+                    doodadNewSpawner.Id = 0;
+                    doodadNewSpawner.UnitId = unitId;
+                    charPos.Local.AddDistanceToFront(1f);
+                    angle = (float)MathUtil.CalculateAngleFrom(charPos, character.Transform);
+                    doodadNewSpawner.Position = charPos.CloneAsSpawnPosition();
+                    if ((args.Length > 2) && (float.TryParse(args[2], NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var dooDegrees)))
+                    {
+                        angle = dooDegrees.DegToRad();
+                        character.SendMessage($"[Spawn] Doodad {unitId} using user provided angle {dooDegrees}° = {angle} rad");
+                    }
+                    else
+                    {
+                        angle = angle.DegToRad();
+                        character.SendMessage($"[Spawn] Doodad {unitId} facing you, using characters angle {angle}");
+                    }
+                    doodadNewSpawner.Position.Yaw = angle;
+                    doodadNewSpawner.Position.Pitch = 0;
+                    doodadNewSpawner.Position.Roll = 0;
+                    int.TryParse(unitId.ToString(), out int idDoo);
+                    CreateSpawnJson(idDoo, doodadNewSpawner.Position.X, doodadNewSpawner.Position.Y, doodadNewSpawner.Position.Z, angle, "NewDooDadSpawns");
+                    doodadNewSpawner.Spawn(0, 0, character.ObjId);
+                    break;
             }
         }
         else
             character.SendMessage("|cFFFF0000[Spawn] Throw parse unitId|r");
     }
 
-    public void CreateSpawnJson(int unitId, double x, double y, double z, double angle)
+    public void CreateSpawnJson(int unitId, double x, double y, double z, double angle, string fileName)
     {
-        string jsonFileName = Path.Combine("Data", "Worlds", "main_world", "NewSpawns.json");
-        string jsonFileName2 = Path.Combine("bin", "Debug", "net8.0", "Data", "Worlds", "main_world", "NewSpawns.json");
+        string jsonFileName = Path.Combine("Data", "Worlds", "main_world", $"{fileName}.json");
+        string jsonFileName2 = Path.Combine("bin", "Debug", "net8.0", "Data", "Worlds", "main_world", $"{fileName}.json");
         List<SpawnUnit> units;
         if (File.Exists(jsonFileName))
         {
