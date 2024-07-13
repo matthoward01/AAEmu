@@ -21,6 +21,14 @@
     (13820,13821,13800,13802,13801);
     UPDATE skills SET casting_time = 1000 WHERE id IN
     (13980,13981,13982,13983,13984);
+    UPDATE skills SET casting_time = 1000 WHERE id IN
+    (14581,14604,14605,14606,14607,21906,22477,22683);
+    UPDATE skills SET casting_time = 1000 WHERE id IN
+    (11096,14579,14614,14615,14616,14617,21582,22684);
+    UPDATE skills SET casting_time = 1000 WHERE id IN
+    (14618,14619,14620,14621,22680);
+    UPDATE skills SET casting_time = 1000 WHERE id >= 26032 AND id <= 26109;
+
 
     --Adding Gilda Stars to Vocation Merchant
     INSERT INTO merchant_goods (id, merchant_pack_id, item_id, grade_id) VALUES (9000001, 164, 23633, 1);
