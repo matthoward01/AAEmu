@@ -33,7 +33,7 @@ public class CharacterActability
 
         var actability = Actabilities[id];
         var previousPoints = actability.Point;
-        actability.Point += point;
+        actability.Point += point * 2;
 
         var template = CharacterManager.Instance.GetExpertLimit(actability.Step);
         if (actability.Point > template.UpLimit)
