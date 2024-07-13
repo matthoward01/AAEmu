@@ -3,17 +3,18 @@
         // Everyone
         "fly": 0,
         "help": 0,
-        
+
         // always keep help at zero
         "online": 0,
         "soloparty": 0,
-        "teleport": 0,        
+        "teleport": 0,
         "testhouse": 0,
         "quest": 0,
         "invisible": 0,
-        "kill": 0,        
+        "kill": 0,
         "spawn": 0,
-        
+        "moveto": 0,
+
         // Moderaters
         "announce": 50,
         "despawn": 50,
@@ -29,7 +30,7 @@
         "revive": 50,
         "showinv": 50,
         "coffer": 50,
-        
+
         // Admin
         "addbuff": 100,
         "addgold": 100,
@@ -46,7 +47,6 @@
         "echo": 100,
         "housebindingmove": 100,
         "move_all": 100,
-        "moveto": 100,
         "nloc": 100,
         "nwrite": 100,
         "packet": 100,
