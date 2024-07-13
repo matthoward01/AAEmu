@@ -282,10 +282,10 @@ public class SCUnitStatePacket : GamePacket
                 flags.Set(5);
             }
 
-            if (character.IdleStatus)
+            /*if (character.IdleStatus)
             {
                 flags.Set(13);
-            }
+            }*/
 
             // PvP Honor gained and PvP Kills
             stream.WritePisc(character.HonorGainedInCombat, character.HostileFactionKills); // очки чести полученные в PvP, кол-во убийств в PvP
