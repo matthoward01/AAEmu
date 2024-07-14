@@ -32,10 +32,20 @@ public class GainLootPackItemEffect : EffectTemplate
         if (caster is not Character character)
             return;
 
+
         // Get Pack data
         var pack = LootGameData.Instance.GetPack(LootPackId);
-        if (pack == null || pack.Loots.Count <= 0)
+        if (pack == null)
+        {
+            Logger.Debug($"LP: {LootPackId} ID: {Id} Pack null...");
             return;
+        }
+
+        if (pack.Loots.Count <= 0)
+        {
+            Logger.Debug($"{LootPackId} Pack loots count <= 0...");
+            return;
+        }
 
         if (!ConsumeSourceItem && ConsumeCount == 0)
         {
