@@ -8,12 +8,10 @@
         "online": 0,
         "soloparty": 0,
         "teleport": 0,
-        "testhouse": 0,
         "quest": 0,
         "kill": 0,
         "spawn": 0,
         "move": 0,
-        "ignoreskillcds": 0,
 
         // Moderaters
         "announce": 50,
@@ -46,6 +44,7 @@
         "dummy": 100,
         "echo": 100,
         "housebindingmove": 100,
+        "ignoreskillcds": 100,
         "move_all": 100,
         "nloc": 100,
         "nwrite": 100,
@@ -68,6 +67,7 @@
         "testfsets": 100,
         "testguild": 100,
         "testheightvisualizer": 100,
+        "testhouse": 100,
         "testmail": 100,
         "testslave": 100,
         "testtransfer": 100,
