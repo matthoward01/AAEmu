@@ -28,6 +28,8 @@
     UPDATE skills SET casting_time = 1000 WHERE id IN
     (11081,14582,14608,14611,14612,14613,22373,22682);
     UPDATE skills SET casting_time = 1000 WHERE id IN
+    (23293,23294,23295,23596,23597,23481,23482);
+    UPDATE skills SET casting_time = 1000 WHERE id IN
     (14618,14619,14620,14621,22680);
     UPDATE skills SET casting_time = 1000 WHERE id >= 26032 AND id <= 26109;
     UPDATE skills SET casting_time = 1000 WHERE id >= 26001 AND id <= 26009;
