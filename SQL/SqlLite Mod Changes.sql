@@ -14,7 +14,7 @@
     UPDATE skills SET casting_time = 1000 WHERE id IN
     (10212,13726,13967,13970,13971,13972,13973,15426,16768,18772,20782,24266,25526,25527);
     UPDATE skills SET casting_time = 1000 WHERE id IN
-    (14238,14239,14240,14241,14242);
+    (14238,14239,14240,14241,14242,16770);
     UPDATE skills SET casting_time = 1000 WHERE id IN
     (13990,13991,13992,13993,13994);
     UPDATE skills SET casting_time = 1000 WHERE id IN
@@ -34,6 +34,7 @@
     UPDATE skills SET casting_time = 1000 WHERE id >= 26032 AND id <= 26109;
     UPDATE skills SET casting_time = 1000 WHERE id >= 26001 AND id <= 26009;
     UPDATE skills SET casting_time = 1000 WHERE id >= 25414 AND id <= 25493 AND id != 25415;
+    UPDATE skills SET casting_time = 1000 where id >= 25855 AND id <= 25869;
 
     --Updating Red Regrade Charm
     UPDATE item_grade_enchanting_supports SET add_success_mul = 10000, add_great_success_ratio = 100, add_great_success_mul = 1000,
