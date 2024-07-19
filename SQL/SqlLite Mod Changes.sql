@@ -41,40 +41,90 @@
     add_break_ratio = -10000, add_downgrade_ratio = -10000 WHERE item_id = 31977
 
     --Adding Gilda Stars to Vocation Merchant
-    INSERT INTO merchant_goods (id, merchant_pack_id, item_id, grade_id) VALUES (9000002, 164, 23633, 1);
+    INSERT INTO merchant_goods (id, merchant_pack_id, item_id, grade_id) VALUES (9010002, 164, 23633, 1);
     UPDATE items SET living_point_price = 500 WHERE id = 23633;
 
     --Adding Minning Drill to Vocation Merchant
-    INSERT INTO merchant_goods (id, merchant_pack_id, item_id, grade_id) VALUES (9000002, 164, 34779, 1);
+    INSERT INTO merchant_goods (id, merchant_pack_id, item_id, grade_id) VALUES (9010002, 164, 34779, 1);
     UPDATE items SET living_point_price = 2000 WHERE id = 34779;
 
     --Adding Fishing Pond to Vocation Merchant
-    INSERT INTO merchant_goods (id, merchant_pack_id, item_id, grade_id) VALUES (9000003, 164, 34778, 1);
+    INSERT INTO merchant_goods (id, merchant_pack_id, item_id, grade_id) VALUES (9010003, 164, 34778, 1);
     UPDATE items SET living_point_price = 2000 WHERE id = 34778;
 
-    --Farm Wagon
-    INSERT INTO "main"."craft_materials" ("id", "craft_id", "item_id", "amount", "main_grade", "require_grade") VALUES ('17945', '4107', '19472', '1', 'f', '-1');
-    INSERT INTO "main"."craft_materials" ("id", "craft_id", "item_id", "amount", "main_grade", "require_grade") VALUES ('17947', '4107', '19468', '4', 'f', '-1');
-    INSERT INTO "main"."craft_materials" ("id", "craft_id", "item_id", "amount", "main_grade", "require_grade") VALUES ('17948', '4107', '19469', '1', 'f', '-1');
-    INSERT INTO "main"."craft_materials" ("id", "craft_id", "item_id", "amount", "main_grade", "require_grade") VALUES ('17949', '4107', '19470', '1', 'f', '-1');
-    INSERT INTO "main"."craft_materials" ("id", "craft_id", "item_id", "amount", "main_grade", "require_grade") VALUES ('17950', '4107', '23722', '1', 'f', '-1');
-    INSERT INTO "main"."craft_materials" ("id", "craft_id", "item_id", "amount", "main_grade", "require_grade") VALUES ('8000230', '4107', '36293', '1', 'f', '-1');
+    --Changing Bundles to use worms and adding them to the vocation vendor
+    UPDATE craft_materials SET item_id = 27142, amount = 5 WHERE item_id = 777 AND craft_id IN (
+    SELECT craft_id FROM craft_materials WHERE item_id IN 
+        (15659,15664,15661,15663,15665,15662,15657,15666,15660,16277,
+        15652,15646,15653,15651,15647,15655,15656,15654,15650,16269,
+        15680,16272,17261,16282,16279,16294,15676,15675,15673,15677,
+        4904,15670,15674,15669,15672,15678,15667,15682,15668,15671)
+    );
 
-    INSERT INTO "main"."crafts" ("id", "title", "cast_delay", "tool_id", "skill_id", "wi_id", "desc", "milestone_id", "req_doodad_id", "need_bind", "ac_id", "actability_limit", "show_upper_crafts", "recommend_level", "visible_order", "translate") VALUES ('4105', '고출력 동력 기관', '10000', '0', '15618', '40', '', '5', '532', 'f', '27', '0', 'f', '0', '2', 't');
-    delete from crafts where id = 4105 AND req_doodad_id is null
-    INSERT INTO "main"."crafts" ("id", "title", "cast_delay", "tool_id", "skill_id", "wi_id", "desc", "milestone_id", "req_doodad_id", "need_bind", "ac_id", "actability_limit", "show_upper_crafts", "recommend_level", "visible_order", "translate") VALUES ('5327', '달구지용 물통', '10000', '0', '15617', '40', '', '5', '532', 'f', '27', '0', 'f', '0', '1', 't');
-    delete from crafts where id = 5327 AND req_doodad_id is null
-    INSERT INTO "main"."crafts" ("id", "title", "cast_delay", "tool_id", "skill_id", "wi_id", "desc", "milestone_id", "req_doodad_id", "need_bind", "ac_id", "actability_limit", "show_upper_crafts", "recommend_level", "visible_order", "translate") VALUES ('4103', '튼튼한 바퀴', '10000', '0', '15618', '40', '', '5', '532', 'f', '27', '0', 'f', '0', '2', 't');
-    delete from crafts where id = 4103 AND req_doodad_id is null
+    INSERT INTO merchant_goods (id, merchant_pack_id, item_id, grade_id) VALUES (9010004, 164, 27142, 1);
+    UPDATE items SET living_point_price = 4 WHERE id = 27142;
 
-    UPDATE "main"."crafts" SET req_doodad_id=532, ac_id=24 WHERE id=4107; --Farm Wagon
-    UPDATE "main"."crafts" SET req_doodad_id=532, ac_id=24 WHERE id=6029; --Farm Hauler
-    UPDATE "main"."crafts" SET req_doodad_id=532, ac_id=24 WHERE id=6913; --Red Farm Hauler
+    --Farm Vehicles
+    UPDATE "main"."crafts" SET req_doodad_id=532, ac_id=24, show_upper_crafts="t"  WHERE id=4107; --Farm Wagon
+    UPDATE "main"."crafts" SET req_doodad_id=532, ac_id=24, show_upper_crafts="t"  WHERE id=6029; --Farm Hauler
+    UPDATE "main"."crafts" SET req_doodad_id=532, ac_id=24, show_upper_crafts="t"  WHERE id=6913; --Red Farm Hauler
+    UPDATE "main"."craft_products" SET show_lower_crafts="t" WHERE "craft_id" in (4107,6029,6913); --Adding bits to make the components clickable on the parent recipes
 
+    --Components:
+    UPDATE "main"."crafts" SET req_doodad_id=532, ac_id=27, show_upper_crafts="t"  WHERE id=4103; --Strong Wheel
+    UPDATE "main"."crafts" SET req_doodad_id=532, ac_id=27, show_upper_crafts="t"  WHERE id=4104; --Solid Shaft
+    UPDATE "main"."crafts" SET req_doodad_id=532, ac_id=27, show_upper_crafts="t"  WHERE id=4105; --High Power Engine
+    UPDATE "main"."crafts" SET req_doodad_id=532, ac_id=27, show_upper_crafts="t"  WHERE id=5327; --Cart Bucket
+    UPDATE "main"."craft_products" SET show_lower_crafts="t" WHERE "craft_id" in (4103,4104,4105,5327); --Adding bits to make the components clickable on the parent recipes
+
+    --Submarines:
+    UPDATE "main"."crafts" SET req_doodad_id=532, ac_id=26, show_upper_crafts="t"  WHERE id=5719; --Ruby Steamfish Submarine
+    UPDATE "main"."crafts" SET req_doodad_id=532, ac_id=26, show_upper_crafts="t"  WHERE id=5720; --Lapis Steamfish Submarine
+    UPDATE "main"."crafts" SET req_doodad_id=532, ac_id=26, show_upper_crafts="t"  WHERE id=5721; --latinum Steamfish Submarine
+    UPDATE "main"."craft_products" SET show_lower_crafts="t" WHERE "craft_id" in (5719,5720,5721); --Adding bits to make the components clickable on the parent recipes
+
+    --Components:
+    UPDATE "main"."crafts" SET req_doodad_id=2239, ac_id=27, show_upper_crafts="t"  WHERE id=5717; --Buoyancy Controller
+    UPDATE "main"."craft_products" SET show_lower_crafts="t" WHERE "craft_id" = 5717; --Adding bits to make the components clickable on the parent recipes
+
+    --Ironclads:
+    UPDATE "main"."crafts" SET req_doodad_id=532, ac_id=24, show_upper_crafts="t" WHERE id=5325; --Fire Ironclad
+    UPDATE "main"."crafts" SET req_doodad_id=532, ac_id=24, show_upper_crafts="t" WHERE id=5326; --Ironclad
+    UPDATE "main"."craft_products" SET show_lower_crafts="t" WHERE "craft_id" in (5325,5326); --Adding bits to make the components clickable on the parent recipes
+
+    --Components:
+    UPDATE "main"."crafts" SET req_doodad_id=532, ac_id=27, show_upper_crafts="t" WHERE id=4102; --Tank Cannon
+    UPDATE "main"."crafts" SET req_doodad_id=532, ac_id=27, show_upper_crafts="t"WHERE id=4106; --Vehicle Controlling Device
+
+    --Cars:
+    UPDATE "main"."crafts" SET req_doodad_id=532, ac_id=24, show_upper_crafts="t" WHERE id=162; --Comet Speedster
+    UPDATE "main"."crafts" SET req_doodad_id=532, ac_id=24, show_upper_crafts="t" WHERE id=163; --Apex Squall
+    UPDATE "main"."crafts" SET req_doodad_id=532, ac_id=24, show_upper_crafts="t" WHERE id=164; --Timber Coupe
+    UPDATE "main"."craft_products" SET show_lower_crafts="t" WHERE "craft_id" in (162,163,164); --Adding bits to make the components clickable on the parent recipes
+
+    --Components:
+    UPDATE "main"."crafts" SET req_doodad_id=564, ac_id=45, show_upper_crafts="t" WHERE id=98; --Crafted Vehicle Frame: Comet Speedster
+    UPDATE "main"."crafts" SET req_doodad_id=564, ac_id=45, show_upper_crafts="t" WHERE id=99; --Crafted Vehicle Frame: Apex Squall
+    UPDATE "main"."crafts" SET req_doodad_id=654, ac_id=45, show_upper_crafts="t" WHERE id=100; --Crafted Vehicle Frame: Timber Coupe
+    UPDATE "main"."crafts" SET req_doodad_id=532, ac_id=27, show_upper_crafts="t" WHERE id=157; --Bright Headlight
+    UPDATE "main"."crafts" SET req_doodad_id=532, ac_id=27, show_upper_crafts="t" WHERE id=158; --Rubber Tire
+    UPDATE "main"."crafts" SET req_doodad_id=532, ac_id=27, show_upper_crafts="t"  WHERE id=159; --Hydraulic Shaft
+    UPDATE "main"."craft_products" SET show_lower_crafts="t" WHERE "craft_id" in (98,99,100,157,158,159); --Adding bits to make the components clickable on the parent recipes
+
+    --Top-tier cars:
+    UPDATE "main"."crafts" SET req_doodad_id=532, ac_id=24, show_upper_crafts="t" WHERE id=6024; --Nova Speedster
+    UPDATE "main"."crafts" SET req_doodad_id=532, ac_id=24, show_upper_crafts="t" WHERE id=6027; --Apex Drift
+    UPDATE "main"."crafts" SET req_doodad_id=532, ac_id=24, show_upper_crafts="t" WHERE id=6028; --Redwood Roadster
+    UPDATE "main"."craft_products" SET show_lower_crafts="t" WHERE "craft_id" in (6024,6027,6028); --Adding bits to make the components clickable on the parent recipes
+    
+    --And finally, adding the platinum steamfish plan to the vocation vendor, which the plan description says, can optionally be done with:
+    INSERT INTO "main"."merchant_goods" ("id", "merchant_pack_id", "item_id", "grade_id") VALUES ('9081001', '164', '29276', '0'); -- Platinum Steamfish Plan
+    
     --Obsidian Weapons
     UPDATE "main"."crafts" SET req_doodad_id=532 WHERE id in (6927,6928,6929,6961,6962,6963,6978,6979,6980); --Carpentry weapons
     UPDATE "main"."crafts" SET req_doodad_id=564 WHERE id in (6930,6931,6964,6965,6981,6982); --handicraft weapons
     UPDATE "main"."crafts" SET req_doodad_id=520 WHERE id in (6916,6917,6918,6919,6920,6921,6922,6923,6924,6925,6926,6932,6950,6951,6952,6953,6955,6956,6957,6958,6959,6960,6966,6967,6968,6969,6970,6971,6972,6973,6974,6975,6976,6977,6983); --anvil weapons
+
 
     UPDATE "main"."crafts" SET ac_id=1 WHERE id in (6916,6950,6967);--Daggers
     UPDATE "main"."crafts" SET ac_id=2 WHERE id in (6917,6951,6968);--sword
