@@ -232,7 +232,7 @@ public class SpecialtyManager : Singleton<SpecialtyManager>
             return 0;
         }
 
-        var basePrice = GetBasePriceForSpecialty(player, npcObjId);
+        var basePrice = GetBasePriceForSpecialty(player, npcObjId) * AppConfiguration.Instance.World.GoldLootMultiplier;
 
         if (basePrice == 0) // We had an error, no need to keep going
             return basePrice;
