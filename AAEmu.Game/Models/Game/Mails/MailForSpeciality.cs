@@ -21,7 +21,7 @@ public class MailForSpeciality : BaseMail
     private bool _sellerIsCrafter;
     // unused private int _itemCountTotal;
 
-    private static TimeSpan TradePackMailDelay = TimeSpan.FromHours(8); // Default is 8 hours
+    private static TimeSpan TradePackMailDelay = TimeSpan.FromHours(1); // Default is 8 hours
     private static string TradeDeliveryName = ".sellBackpack";
     private static string TradeDeliveryTitle = "Speciality Payment";
     private static string TradeDeliveryTitleSeller = "Speciality Payment [Delivery]";
