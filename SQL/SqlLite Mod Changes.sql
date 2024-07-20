@@ -156,10 +156,10 @@
     INSERT INTO craft_pack_crafts (id, craft_pack_id, craft_id) VALUES (900100, 13, 6719);
 
     --Fixing Spacious Storage Chest
-    UPDATE crafts SET req_doodad_id = 2240 WHERE id = 107;
+    UPDATE crafts SET req_doodad_id = 2240, ac_id = 66 WHERE id = 107;
 
     --Fixing Golden Teardrop Storage Chest
-    UPDATE crafts SET req_doodad_id = 2240 WHERE id = 5689;
+    UPDATE crafts SET req_doodad_id = 2240, ac_id = 66 WHERE id = 5689;
 
     UPDATE skills SET casting_time = 1000 WHERE id IN (20487, 23294);
 
