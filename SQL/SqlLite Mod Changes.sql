@@ -30,7 +30,7 @@
     UPDATE skills SET casting_time = 1000 WHERE id IN
     (23293,23294,23295,23596,23597,23481,23482);
     UPDATE skills SET casting_time = 1000 WHERE id IN
-    (14618,14619,14620,14621,22680);
+    (14618,14619,14620,14621,22680,20487);    
     UPDATE skills SET casting_time = 1000 WHERE id >= 26032 AND id <= 26109;
     UPDATE skills SET casting_time = 1000 WHERE id >= 26001 AND id <= 26009;
     UPDATE skills SET casting_time = 1000 WHERE id >= 25414 AND id <= 25493 AND id != 25415;
@@ -38,7 +38,7 @@
 
     --Updating Red Regrade Charm
     UPDATE item_grade_enchanting_supports SET add_success_mul = 10000, add_great_success_ratio = 100, add_great_success_mul = 1000,
-    add_break_ratio = -10000, add_downgrade_ratio = -10000 WHERE item_id = 31977
+    add_break_ratio = -10000, add_downgrade_ratio = -10000 WHERE item_id = 31977;
 
     --Adding Gilda Stars to Vocation Merchant
     INSERT INTO merchant_goods (id, merchant_pack_id, item_id, grade_id) VALUES (9010002, 164, 23633, 1);
@@ -144,6 +144,25 @@
     UPDATE "main"."crafts" SET ac_id=12 WHERE id in (6931,6965,6982);--Flute
     UPDATE "main"."crafts" SET ac_id=10 WHERE id in (6932,6966,6983);--Shield
 
+    --Increasing Max Stack Size of Farming and Gathering Seeds, Lumber, Iron Ingot, Stone Brick
+    UPDATE items SET max_stack_size = 1000 WHERE id IN (
+    15659,15664,15661,15663,15665,15662,15657,15666,15660,16277,
+    15652,15646,15653,15651,15647,15655,15656,15654,15650,16269,
+    15680,16272,17261,16282,16279,16294,15676,15675,15673,15677,
+    4904,15670,15674,15669,15672,15678,15667,15682,15668,15671,
+    8337,8343,8318);   
+
+    --Fixing Afternoon Sun on Alchemy Bench
+    INSERT INTO craft_pack_crafts (id, craft_pack_id, craft_id) VALUES (900100, 13, 6719);
+
+    --Fixing Spacious Storage Chest
+    UPDATE crafts SET req_doodad_id = 2240 WHERE id = 107;
+
+    --Fixing Golden Teardrop Storage Chest
+    UPDATE crafts SET req_doodad_id = 2240 WHERE id = 5689;
+
+    UPDATE skills SET casting_time = 1000 WHERE id IN (20487, 23294);
+
 --Server Only
     --Changing all the 10 seconds spawn times
-    UPDATE npc_spawners SET spawn_delay_min = 121, spawn_delay_max = 121 WHERE spawn_delay_min = 10;
+    UPDATE npc_spawners SET spawn_delay_min = 121, spawn_delay_max = 121 WHERE spawn_delay_min = 10;  
