@@ -160,6 +160,7 @@
 
     --Fixing Golden Teardrop Storage Chest
     UPDATE crafts SET req_doodad_id = 2240, ac_id = 66 WHERE id = 5689;
+    UPDATE craft_products SET show_lower_crafts = 't' where craft_id = 107;
 
     UPDATE skills SET casting_time = 1000 WHERE id IN (20487, 23294);
 
