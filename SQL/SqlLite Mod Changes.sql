@@ -12,25 +12,13 @@
 
     --Decreasing casting time of gathering type skills
     UPDATE skills SET casting_time = 1000 WHERE id IN
-    (10212,13726,13967,13970,13971,13972,13973,15426,16768,18772,20782,24266,25526,25527);
-    UPDATE skills SET casting_time = 1000 WHERE id IN
-    (14238,14239,14240,14241,14242,16770);
-    UPDATE skills SET casting_time = 1000 WHERE id IN
-    (13990,13991,13992,13993,13994);
-    UPDATE skills SET casting_time = 1000 WHERE id IN
-    (13820,13821,13800,13802,13801);
-    UPDATE skills SET casting_time = 1000 WHERE id IN
-    (13980,13981,13982,13983,13984);
-    UPDATE skills SET casting_time = 1000 WHERE id IN
-    (14581,14604,14605,14606,14607,21906,22477,22683);
-    UPDATE skills SET casting_time = 1000 WHERE id IN
-    (11096,14579,14614,14615,14616,14617,21582,22684);
-    UPDATE skills SET casting_time = 1000 WHERE id IN
-    (11081,14582,14608,14611,14612,14613,22373,22682);
-    UPDATE skills SET casting_time = 1000 WHERE id IN
-    (23293,23294,23295,23596,23597,23481,23482);
-    UPDATE skills SET casting_time = 1000 WHERE id IN
-    (14618,14619,14620,14621,22680,20487);    
+    (10212,13726,13967,13970,13971,13972,13973,15426,16768,18772,
+    20782,24266,25526,25527,20487,23294,14238,14239,14240,14241,14242,16770,
+    13990,13991,13992,13993,13994,13820,13821,13800,13802,13801,
+    13980,13981,13982,13983,13984,14581,14604,14605,14606,14607,21906,22477,22683,
+    11096,14579,14614,14615,14616,14617,21582,22684,11081,14582,14608,14611,14612,14613,22373,22682,
+    23293,23294,23295,23596,23597,23481,23482,14618,14619,14620,14621,22680,20487,23297);
+
     UPDATE skills SET casting_time = 1000 WHERE id >= 26032 AND id <= 26109;
     UPDATE skills SET casting_time = 1000 WHERE id >= 26001 AND id <= 26009;
     UPDATE skills SET casting_time = 1000 WHERE id >= 25414 AND id <= 25493 AND id != 25415;
@@ -69,6 +57,7 @@
     UPDATE "main"."crafts" SET req_doodad_id=532, ac_id=24, show_upper_crafts="t"  WHERE id=6029; --Farm Hauler
     UPDATE "main"."crafts" SET req_doodad_id=532, ac_id=24, show_upper_crafts="t"  WHERE id=6913; --Red Farm Hauler
     UPDATE "main"."craft_products" SET show_lower_crafts="t" WHERE "craft_id" in (4107,6029,6913); --Adding bits to make the components clickable on the parent recipes
+    INSERT INTO "main"."craft_materials" ("id", "craft_id", "item_id", "amount", "main_grade", "require_grade") VALUES ('9081000', '4107', '36293', '1', 'f', '-1');
 
     --Components:
     UPDATE "main"."crafts" SET req_doodad_id=532, ac_id=27, show_upper_crafts="t"  WHERE id=4103; --Strong Wheel
@@ -150,7 +139,7 @@
     15652,15646,15653,15651,15647,15655,15656,15654,15650,16269,
     15680,16272,17261,16282,16279,16294,15676,15675,15673,15677,
     4904,15670,15674,15669,15672,15678,15667,15682,15668,15671,
-    8337,8343,8318);   
+    8337,8343,8318,19943,16255,26638,28125);   
 
     --Fixing Afternoon Sun on Alchemy Bench
     INSERT INTO craft_pack_crafts (id, craft_pack_id, craft_id) VALUES (900100, 13, 6719);
@@ -162,7 +151,8 @@
     UPDATE crafts SET req_doodad_id = 2240, ac_id = 66 WHERE id = 5689;
     UPDATE craft_products SET show_lower_crafts = 't' where craft_id = 107;
 
-    UPDATE skills SET casting_time = 1000 WHERE id IN (20487, 23294);
+    --Making it where there are no proficeny limits
+    UPDATE expert_limits SET expert_limit = 0;
 
 --Server Only
     --Changing all the 10 seconds spawn times
