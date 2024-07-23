@@ -17,7 +17,9 @@
     13990,13991,13992,13993,13994,13820,13821,13800,13802,13801,
     13980,13981,13982,13983,13984,14581,14604,14605,14606,14607,21906,22477,22683,
     11096,14579,14614,14615,14616,14617,21582,22684,11081,14582,14608,14611,14612,14613,22373,22682,
-    23293,23294,23295,23596,23597,23481,23482,14618,14619,14620,14621,22680,20487,23297);
+    23293,23294,23295,23596,23597,23481,23482,14618,14619,14620,14621,22680,20487,23297,20678,16771,23297,
+    26128,10204,13165,13168,13191,13703,13820,13821,20336,20595,20678,23421,25961,26129,
+    20784,16453,20781,20779,25528,25529,25530,25531,25532,25533,20595);
 
     UPDATE skills SET casting_time = 1000 WHERE id >= 26032 AND id <= 26109;
     UPDATE skills SET casting_time = 1000 WHERE id >= 26001 AND id <= 26009;
@@ -51,6 +53,9 @@
 
     INSERT INTO merchant_goods (id, merchant_pack_id, item_id, grade_id) VALUES (9010004, 164, 27142, 1);
     UPDATE items SET living_point_price = 4 WHERE id = 27142;
+
+    --Adding Vanilla to Seed Shop
+    INSERT INTO merchant_goods (id, merchant_pack_id, item_id, grade_id) VALUES (9010005, 171, 16270, 1);
 
     --Farm Vehicles
     UPDATE "main"."crafts" SET req_doodad_id=532, ac_id=24, show_upper_crafts="t"  WHERE id=4107; --Farm Wagon
@@ -134,12 +139,7 @@
     UPDATE "main"."crafts" SET ac_id=10 WHERE id in (6932,6966,6983);--Shield
 
     --Increasing Max Stack Size of Farming and Gathering Seeds, Lumber, Iron Ingot, Stone Brick
-    UPDATE items SET max_stack_size = 1000 WHERE id IN (
-    15659,15664,15661,15663,15665,15662,15657,15666,15660,16277,
-    15652,15646,15653,15651,15647,15655,15656,15654,15650,16269,
-    15680,16272,17261,16282,16279,16294,15676,15675,15673,15677,
-    4904,15670,15674,15669,15672,15678,15667,15682,15668,15671,
-    8337,8343,8318,19943,16255,26638,28125);   
+    UPDATE items SET max_stack_size = 1000 WHERE max_stack_size = 100;   
 
     --Fixing Afternoon Sun on Alchemy Bench
     INSERT INTO craft_pack_crafts (id, craft_pack_id, craft_id) VALUES (900100, 13, 6719);
@@ -152,8 +152,14 @@
     UPDATE craft_products SET show_lower_crafts = 't' where craft_id = 107;
 
     --Making it where there are no proficeny limits
-    UPDATE expert_limits SET expert_limit = 0;
-
+    UPDATE expert_limits SET expert_limit = 8 WHERE id = 2;
+    UPDATE expert_limits SET expert_limit = 7 WHERE id = 3;
+    UPDATE expert_limits SET expert_limit = 6 WHERE id = 4;
+    UPDATE expert_limits SET expert_limit = 5 WHERE id = 5;
+    UPDATE expert_limits SET expert_limit = 4 WHERE id = 6;
+    UPDATE expert_limits SET expert_limit = 3 WHERE id = 7;
+    --INSERT INTO expand_expert_limits (id, expand_count, life_point, item_id, item_count) VALUES (15, 15, 0, 29656, 15);
+    --INSERT INTO expand_expert_limits (id, expand_count, life_point, item_id, item_count) VALUES (16, 16, 0, 29656, 16);
 --Server Only
     --Changing all the 10 seconds spawn times
     UPDATE npc_spawners SET spawn_delay_min = 121, spawn_delay_max = 121 WHERE spawn_delay_min = 10;  
