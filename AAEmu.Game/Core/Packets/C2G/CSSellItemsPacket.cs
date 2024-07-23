@@ -3,6 +3,7 @@ using AAEmu.Commons.Network;
 using AAEmu.Game.Core.Managers;
 using AAEmu.Game.Core.Managers.World;
 using AAEmu.Game.Core.Network.Game;
+using AAEmu.Game.Models;
 using AAEmu.Game.Models.Game.Items;
 using AAEmu.Game.Models.Game.Items.Actions;
 
@@ -56,7 +57,7 @@ public class CSSellItemsPacket : GamePacket
             {
                 Logger.Warn($"Failed to move sold itemId {item.Id} ({item.TemplateId}) to BuyBack ItemContainer for {Connection.ActiveChar.Name}");
             }
-            money += (int)(item.Template.Refund * ItemManager.Instance.GetGradeTemplate(item.Grade).RefundMultiplier / 100f) *
+            money += (int)((item.Template.Refund * (int)AppConfiguration.Instance.World.GoldLootMultiplier) * ItemManager.Instance.GetGradeTemplate(item.Grade).RefundMultiplier / 100f) *
                      item.Count;
         }
 
