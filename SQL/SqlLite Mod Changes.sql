@@ -19,7 +19,7 @@
     11096,14579,14614,14615,14616,14617,21582,22684,11081,14582,14608,14611,14612,14613,22373,22682,
     23293,23294,23295,23596,23597,23481,23482,14618,14619,14620,14621,22680,20487,23297,20678,16771,23297,
     26128,10204,13165,13168,13191,13703,13820,13821,20336,20595,20678,23421,25961,26129,
-    20784,16453,20781,20779,25528,25529,25530,25531,25532,25533,20595);
+    20784,16453,20781,20779,25528,25529,25530,25531,25532,25533,20595,16774,22910,20606);
 
     UPDATE skills SET casting_time = 1000 WHERE id >= 26032 AND id <= 26109;
     UPDATE skills SET casting_time = 1000 WHERE id >= 26001 AND id <= 26009;
@@ -32,7 +32,7 @@
 
     --Adding Gilda Stars to Vocation Merchant
     INSERT INTO merchant_goods (id, merchant_pack_id, item_id, grade_id) VALUES (9010002, 164, 23633, 1);
-    UPDATE items SET living_point_price = 500 WHERE id = 23633;
+    UPDATE items SET living_point_price = 100 WHERE id = 23633;
 
     --Adding Minning Drill to Vocation Merchant
     INSERT INTO merchant_goods (id, merchant_pack_id, item_id, grade_id) VALUES (9010002, 164, 34779, 1);
@@ -41,6 +41,12 @@
     --Adding Fishing Pond to Vocation Merchant
     INSERT INTO merchant_goods (id, merchant_pack_id, item_id, grade_id) VALUES (9010003, 164, 34778, 1);
     UPDATE items SET living_point_price = 2000 WHERE id = 34778;
+    --Bait worms to vocation shop
+    INSERT INTO merchant_goods (id, merchant_pack_id, item_id, grade_id) VALUES (9010004, 164, 27142, 1);
+    UPDATE items SET living_point_price = 4 WHERE id = 27142;
+
+    --Adding Vanilla to Seed Shop
+    INSERT INTO merchant_goods (id, merchant_pack_id, item_id, grade_id) VALUES (9010005, 171, 16270, 1);
 
     --Changing Bundles to use worms and adding them to the vocation vendor
     UPDATE craft_materials SET item_id = 27142, amount = 5 WHERE item_id = 777 AND craft_id IN (
@@ -50,12 +56,6 @@
         15680,16272,17261,16282,16279,16294,15676,15675,15673,15677,
         4904,15670,15674,15669,15672,15678,15667,15682,15668,15671)
     );
-
-    INSERT INTO merchant_goods (id, merchant_pack_id, item_id, grade_id) VALUES (9010004, 164, 27142, 1);
-    UPDATE items SET living_point_price = 4 WHERE id = 27142;
-
-    --Adding Vanilla to Seed Shop
-    INSERT INTO merchant_goods (id, merchant_pack_id, item_id, grade_id) VALUES (9010005, 171, 16270, 1);
 
     --Farm Vehicles
     UPDATE "main"."crafts" SET req_doodad_id=532, ac_id=24, show_upper_crafts="t"  WHERE id=4107; --Farm Wagon
@@ -153,11 +153,11 @@
 
     --Making it where there are no proficeny limits
     UPDATE expert_limits SET expert_limit = 8 WHERE id = 2;
-    UPDATE expert_limits SET expert_limit = 7 WHERE id = 3;
-    UPDATE expert_limits SET expert_limit = 6 WHERE id = 4;
-    UPDATE expert_limits SET expert_limit = 5 WHERE id = 5;
-    UPDATE expert_limits SET expert_limit = 4 WHERE id = 6;
-    UPDATE expert_limits SET expert_limit = 3 WHERE id = 7;
+    UPDATE expert_limits SET expert_limit = 8 WHERE id = 3;
+    UPDATE expert_limits SET expert_limit = 8 WHERE id = 4;
+    UPDATE expert_limits SET expert_limit = 8 WHERE id = 5;
+    UPDATE expert_limits SET expert_limit = 8 WHERE id = 6;
+    UPDATE expert_limits SET expert_limit = 8 WHERE id = 7;
     --INSERT INTO expand_expert_limits (id, expand_count, life_point, item_id, item_count) VALUES (15, 15, 0, 29656, 15);
     --INSERT INTO expand_expert_limits (id, expand_count, life_point, item_id, item_count) VALUES (16, 16, 0, 29656, 16);
 --Server Only
