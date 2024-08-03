@@ -10,6 +10,8 @@
     UPDATE open_portal_inland_reagents SET amount = 0;
     UPDATE open_portal_outland_reagents SET amount = 0;
 
+    
+
     --Decreasing casting time of gathering type skills
     UPDATE skills SET casting_time = 1000 WHERE id IN
     (10212,13726,13967,13970,13971,13972,13973,15426,16768,18772,
@@ -19,7 +21,9 @@
     11096,14579,14614,14615,14616,14617,21582,22684,11081,14582,14608,14611,14612,14613,22373,22682,
     23293,23294,23295,23596,23597,23481,23482,14618,14619,14620,14621,22680,20487,23297,20678,16771,23297,
     26128,10204,13165,13168,13191,13703,13820,13821,20336,20595,20678,23421,25961,26129,
-    20784,16453,20781,20779,25528,25529,25530,25531,25532,25533,20595,16774,22910,20606,23296,18110,13974,13975,13976,13977,13978,14622,14623,14624,14625,14626);
+    20784,16453,20781,20779,25528,25529,25530,25531,25532,25533,20595,16774,22910,20606,23296,18110,
+    13974,13975,13976,13977,13978,14622,14623,14624,14625,14626,13985,13986,13987,13988,13989,14575,14574,
+    14641,14642,17320,14580,14581,14582,14579,25520,25521,25522,25523,14533,14534,14535,14536,14537,26137,10743,11086);
 
     UPDATE skills SET casting_time = 1000 WHERE id >= 26032 AND id <= 26109;
     UPDATE skills SET casting_time = 1000 WHERE id >= 26001 AND id <= 26009;
@@ -163,4 +167,8 @@
     --INSERT INTO expand_expert_limits (id, expand_count, life_point, item_id, item_count) VALUES (16, 16, 0, 29656, 16);
 --Server Only
     --Changing all the 10 seconds spawn times
-    UPDATE npc_spawners SET spawn_delay_min = 121, spawn_delay_max = 121 WHERE spawn_delay_min = 10;  
+    UPDATE npc_spawners SET spawn_delay_min = 121, spawn_delay_max = 121 WHERE spawn_delay_min = 10; 
+    
+    --Triple Mining Ore and Stone
+    UPDATE loots set min_amount = 9, max_amount = 12 WHERE id = 65423;
+    UPDATE loots set min_amount = 6, max_amount = 12 WHERE id = 65456;
