@@ -23,7 +23,7 @@
     26128,10204,13165,13168,13191,13703,13820,13821,20336,20595,20678,23421,25961,26129,
     20784,16453,20781,20779,25528,25529,25530,25531,25532,25533,20595,16774,22910,20606,23296,18110,
     13974,13975,13976,13977,13978,14622,14623,14624,14625,14626,13985,13986,13987,13988,13989,14575,14574,
-    14641,14642,17320,14580,14581,14582,14579,25520,25521,25522,25523,14533,14534,14535,14536,14537,26137,10743,11086);
+    14641,14642,17320,14580,14581,14582,14579,25520,25521,25522,25523,14533,14534,14535,14536,14537,26137,10743,11086,14696,14693,14694,14695);
 
     UPDATE skills SET casting_time = 1000 WHERE id >= 26032 AND id <= 26109;
     UPDATE skills SET casting_time = 1000 WHERE id >= 26001 AND id <= 26009;
@@ -45,12 +45,29 @@
     --Adding Fishing Pond to Vocation Merchant
     INSERT INTO merchant_goods (id, merchant_pack_id, item_id, grade_id) VALUES (9010003, 164, 34778, 1);
     UPDATE items SET living_point_price = 2000 WHERE id = 34778;
+
     --Bait worms to vocation shop
     INSERT INTO merchant_goods (id, merchant_pack_id, item_id, grade_id) VALUES (9010004, 164, 27142, 1);
     UPDATE items SET living_point_price = 4 WHERE id = 27142;
 
     --Adding Vanilla to Seed Shop
     INSERT INTO merchant_goods (id, merchant_pack_id, item_id, grade_id) VALUES (9010005, 171, 16270, 1);
+
+    --Sunpoints to vocation shop
+    INSERT INTO merchant_goods (id, merchant_pack_id, item_id, grade_id) VALUES (9010006, 164, 28301, 1);
+    UPDATE items SET living_point_price = 100 WHERE id = 28301;
+
+    --Moonpoint to vocation shop
+    INSERT INTO merchant_goods (id, merchant_pack_id, item_id, grade_id) VALUES (9010007, 164, 28302, 1);
+    UPDATE items SET living_point_price = 100 WHERE id = 28302;
+
+    --Starpoint to vocation shop
+    INSERT INTO merchant_goods (id, merchant_pack_id, item_id, grade_id) VALUES (9010008, 164, 31929, 1);
+    UPDATE items SET living_point_price = 100 WHERE id = 31929;
+
+    --Lunarite to vocation shop
+    INSERT INTO merchant_goods (id, merchant_pack_id, item_id, grade_id) VALUES (9010009, 164, 24911, 1);
+    UPDATE items SET living_point_price = 20 WHERE id = 24911;
 
     --Changing Bundles to use worms and adding them to the vocation vendor
     UPDATE craft_materials SET item_id = 27142, amount = 5 WHERE item_id = 777 AND craft_id IN (
