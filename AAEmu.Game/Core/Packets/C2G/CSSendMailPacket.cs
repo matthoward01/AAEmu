@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-
 using AAEmu.Commons.Network;
+using AAEmu.Game.Core.Managers;
 using AAEmu.Game.Core.Managers.World;
 using AAEmu.Game.Core.Network.Game;
+using AAEmu.Game.Core.Packets.G2C;
 using AAEmu.Game.Models.Game;
 using AAEmu.Game.Models.Game.Items;
 using AAEmu.Game.Models.Game.Mails;
@@ -47,6 +48,7 @@ public class CSSendMailPacket : GamePacket
 
         // Validate if we are near a MailBox
         bool mailCheckOK;
+        
         if (doodad != null)
         {
             // Cannot rely on doodad GroupID being "Other - Mailboxes (6)", as some of the mailboxes belong to other groups (e.g. "Housing - Furniture").
@@ -66,7 +68,17 @@ public class CSSendMailPacket : GamePacket
             mailCheckOK = false;
 
         if (mailCheckOK)
-            Connection.ActiveChar.Mails.SendMailToPlayer(type, receiverCharName, title, text, attachments, money0, money1, money2, extra, itemSlots);
+        {
+            var mailResult = Connection.ActiveChar.Mails.SendMailToPlayer(type, receiverCharName, title, text, attachments, money0, money1, money2, extra, itemSlots);
+            if (mailResult == MailResult.Success)
+            {
+                Connection.ActiveChar.SendErrorMessage(ErrorMessageType.MailSuccess);
+            }
+            else
+            {
+                Connection.SendPacket(new SCMailFailedPacket(mailResult, itemSlots.ToArray(), false));
+            }
+        }
         else
             Connection.ActiveChar.SendErrorMessage(ErrorMessageType.MailFailMailboxNotFound);
     }

@@ -27,6 +27,8 @@ public class ExpeditionManager : Singleton<ExpeditionManager>
     private Regex _nameRegex;
 
     private Dictionary<FactionsEnum, Expedition> _expeditions;
+    
+    public IEnumerable<Expedition> Expeditions { get => _expeditions.Values; }
 
     public static Expedition Create(string name, Character owner)
     {

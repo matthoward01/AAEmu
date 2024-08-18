@@ -1,5 +1,8 @@
-﻿using System.Net;
+﻿using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Net;
 using System.Text.Json;
+using System.Web;
 using NetCoreServer;
 
 namespace AAEmu.Game.Services.WebApi.Controllers;
@@ -36,5 +39,13 @@ internal class BaseController : IController
         response.SetBody(jsonResult);
 
         return response;
+    }
+    
+    public NameValueCollection ParseQueryString(string url)
+    {
+        var queryStartIndex = url.IndexOf('?');
+        var queryString = queryStartIndex >= 0 ? url.Substring(queryStartIndex + 1) : string.Empty;
+
+        return HttpUtility.ParseQueryString(queryString);
     }
 }
