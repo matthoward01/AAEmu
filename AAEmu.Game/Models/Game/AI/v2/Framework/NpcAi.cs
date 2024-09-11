@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 using System.Linq;
@@ -11,7 +11,6 @@ using AAEmu.Game.Models.Game.AI.v2.Controls;
 using AAEmu.Game.Models.Game.AI.v2.Params;
 using AAEmu.Game.Models.Game.NPChar;
 using AAEmu.Game.Models.Game.Units;
-using AAEmu.Game.Models.Game.Units.Movements;
 using AAEmu.Game.Models.StaticValues;
 
 using NLog;
@@ -124,7 +123,7 @@ public abstract class NpcAi
 
     protected void SetCurrentBehavior(BehaviorKind kind)
     {
-        if (!_behaviors.ContainsKey(kind))
+        if (!_behaviors.TryGetValue(kind, out var value))
         {
             Logger.Trace(
                 $"Trying to set Npc {Owner.TemplateId}:{Owner.ObjId} current behavior, but it is not valid. Missing behavior: {kind}");
@@ -132,7 +131,7 @@ public abstract class NpcAi
         }
 
         Logger.Trace($"Set Npc {Owner.TemplateId}:{Owner.ObjId} current behavior: {kind}");
-        SetCurrentBehavior(_behaviors[kind]);
+        SetCurrentBehavior(value);
     }
 
     public Behavior AddTransition(Behavior source, Transition target)
@@ -181,10 +180,10 @@ public abstract class NpcAi
 
     private bool HasPersistentAi()
     {
-        return PathHandler.AiPathPoints.Count > 0 || 
-               PathHandler.AiPathPointsRemaining.Count > 0 || 
+        return PathHandler.AiPathPoints.Count > 0 ||
+               PathHandler.AiPathPointsRemaining.Count > 0 ||
                AiFollowUnitObj != null ||
-               AiCommandsQueue.Count > 0; 
+               AiCommandsQueue.Count > 0;
     }
 
     private void Transition(TransitionEvent on)

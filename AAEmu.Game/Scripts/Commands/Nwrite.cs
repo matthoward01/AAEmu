@@ -5,7 +5,6 @@ using AAEmu.Game.Models.Game.Char;
 using AAEmu.Game.Models.Game.DoodadObj;
 using AAEmu.Game.Models.Game.NPChar;
 using AAEmu.Game.Models.Json;
-using NLog;
 using System;
 using System.Collections.Generic;
 using AAEmu.Commons.IO;
@@ -46,7 +45,7 @@ public class Nwrite : ICommand
 
         // Select what we're editing
         // Doodad by Id ?
-        if (args.Length >= 2 && args[0].ToLower() == "doodad" &&
+        if (args.Length >= 2 && args[0].Equals("doodad", StringComparison.CurrentCultureIgnoreCase) &&
             uint.TryParse(args[1], out var targetDoodadId))
         {
             doodad = WorldManager.Instance.GetDoodad(targetDoodadId);
@@ -59,13 +58,13 @@ public class Nwrite : ICommand
         }
 
         // NPC by Id ?
-        if (args.Length >= 2 && args[0].ToLower() == "npc" && uint.TryParse(args[1], out var targetNpcId))
+        if (args.Length >= 2 && args[0].Equals("npc", StringComparison.CurrentCultureIgnoreCase) && uint.TryParse(args[1], out var targetNpcId))
         {
             npc = WorldManager.Instance.GetNpc(targetNpcId);
         }
 
         // All Npcs ?
-        var saveAll = args.Length >= 1 && args[0].ToLower() == "all";
+        var saveAll = args.Length >= 1 && args[0].Equals("all", StringComparison.CurrentCultureIgnoreCase);
 
         if (doodad == null && npc == null && saveAll == false)
         {
@@ -115,7 +114,9 @@ public class Nwrite : ICommand
 
                                 var newEntry = new JsonDoodadSpawns
                                 {
-                                    Id = newId, UnitId = doodad.TemplateId, Position = pos
+                                    Id = newId,
+                                    UnitId = doodad.TemplateId,
+                                    Position = pos
                                 };
                                 spawners.Add(newEntry);
 

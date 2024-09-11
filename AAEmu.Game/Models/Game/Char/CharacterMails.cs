@@ -73,12 +73,12 @@ public class CharacterMails
 
     public MailResult SendMailToPlayer(MailType mailType, string receiverName, string title, string text, byte attachments, int money0, int money1, int money2, long extra, List<(SlotType, byte)> itemSlots)
     {
-        
+
         if (string.IsNullOrWhiteSpace(receiverName) || NameManager.Instance.GetCharacterId(receiverName) == 0)
         {
             return MailResult.UnableToFindRecipient;
         }
-        
+
         var mail = new MailPlayerToPlayer(Self, receiverName);
 
         mail.MailType = mailType;
@@ -282,9 +282,8 @@ public class CharacterMails
 
     public void ReturnMail(long id)
     {
-        if (MailManager.Instance._allPlayerMails.ContainsKey(id))
+        if (MailManager.Instance._allPlayerMails.TryGetValue(id, out var thisMail))
         {
-            var thisMail = MailManager.Instance._allPlayerMails[id];
             var itemSlots = new List<(SlotType slotType, byte slot)>();
             for (var i = 0; i < MailBody.MaxMailAttachments; i++)
             {

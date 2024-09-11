@@ -452,8 +452,8 @@ public class Unit : BaseUnit, IUnit
                 case Character character:
                     DespawnMate(character);
                     break;
-                //default:
-                //    break;
+                    //default:
+                    //    break;
             }
             return;
         }
@@ -611,7 +611,7 @@ public class Unit : BaseUnit, IUnit
 
         var newTask = new UseAutoAttackSkillTask(skill, character);
         character.AutoAttackTask = newTask;
-        var attackDelayTimes = SkillManager.GetAttackDelay(skill.Template, character); 
+        var attackDelayTimes = SkillManager.GetAttackDelay(skill.Template, character);
 
         TaskManager.Instance.Schedule(character.AutoAttackTask, TimeSpan.FromMilliseconds(attackDelayTimes),
             TimeSpan.FromMilliseconds(attackDelayTimes), -1);
@@ -738,11 +738,11 @@ public class Unit : BaseUnit, IUnit
 
     public override void RemoveBonus(uint bonusIndex, UnitAttribute attribute)
     {
-        if (!Bonuses.ContainsKey(bonusIndex))
+        if (!Bonuses.TryGetValue(bonusIndex, out var bonuses))
         {
             return;
         }
-        var bonuses = Bonuses[bonusIndex];
+
         foreach (var bonus in new List<Bonus>(bonuses))
         {
             if (bonus.Template != null && bonus.Template.Attribute == attribute)
@@ -1067,8 +1067,8 @@ public class Unit : BaseUnit, IUnit
 
             // Mods from equipped Gems
             foreach (var gem in ei.GemIds)
-            foreach (var template in ItemManager.Instance.GetUnitModifiers(gem))
-                AddBonus(1, new Bonus { Template = template, Value = template.Value });
+                foreach (var template in ItemManager.Instance.GetUnitModifiers(gem))
+                    AddBonus(1, new Bonus { Template = template, Value = template.Value });
         }
 
         // Apply Equipment Effects
@@ -1126,14 +1126,14 @@ public class Unit : BaseUnit, IUnit
                 if (template.EquipItemSetId == 0)
                     continue;
 
-                if (!setNumPieces.ContainsKey(equipItemSetId))
+                if (!setNumPieces.TryGetValue(equipItemSetId, out var value))
                 {
                     setNumPieces.Add(equipItemSetId, (1));
                     itemLevels.Add(equipItemSetId, (uint)item.Template.Level);
                 }
                 else
                 {
-                    setNumPieces[equipItemSetId]++;
+                    setNumPieces[equipItemSetId] = ++value;
                     if (item.Template.Level < itemLevels[equipItemSetId])
                         itemLevels[equipItemSetId] = (uint)item.Template.Level;
                 }
@@ -1367,9 +1367,9 @@ public class Unit : BaseUnit, IUnit
                     Buffs.AddBuff(newEffect);
                 }
             }
-            
+
             // Unit_Modifiers from items
-            
+
         }
 
         if (itemAdded == null && itemRemoved == null) // This is the first load check to apply buffs for equipped items. 
@@ -1466,7 +1466,7 @@ public class Unit : BaseUnit, IUnit
                 }
             }
         }
-        
+
         // Ok, we actually changed zone groups, we'll have to do some chat channel stuff
         if (this is Character player)
         {

@@ -10,18 +10,13 @@ using AAEmu.Game.Models.Game.DoodadObj.Static;
 using AAEmu.Game.Models.Game.Housing;
 using AAEmu.Game.Models.Game.Items;
 using AAEmu.Game.Models.Game.Items.Actions;
-using AAEmu.Game.Models.Game.Items.Templates;
 using AAEmu.Game.Models.Game.Skills;
 using AAEmu.Game.Models.Tasks.Skills;
-
-using NLog;
 
 namespace AAEmu.Game.Models.Game.Char;
 
 public class CharacterCraft
 {
-    private static Logger Logger { get; } = LogManager.GetCurrentClassLogger();
-
     private int _count { get; set; }
     private Craft _craft { get; set; }
     private uint _doodadId { get; set; }
@@ -94,7 +89,7 @@ public class CharacterCraft
 
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException();
+                    throw new ArgumentOutOfRangeException(Convert.ToString(doodad.FuncPermission));
             }
 
             Owner.SendMessage($"Crafting using @DOODAD_NAME({doodad.TemplateId}) - {doodad.TemplateId} (objId: {doodad.ObjId}) with current permission {doodad.FuncPermission} = {hasPermission}");

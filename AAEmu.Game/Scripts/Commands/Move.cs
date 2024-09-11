@@ -1,10 +1,8 @@
-﻿using System.Drawing;
-using AAEmu.Game.Core.Managers;
+﻿using AAEmu.Game.Core.Managers;
 using AAEmu.Game.Models.Game;
 using AAEmu.Game.Models.Game.Char;
 using AAEmu.Game.Core.Managers.World;
 using AAEmu.Game.Core.Packets.G2C;
-using AAEmu.Game.Models.Game.Chat;
 using AAEmu.Game.Utils.Scripts;
 
 namespace AAEmu.Game.Scripts.Commands;
@@ -44,7 +42,7 @@ public class Move : ICommand
             targetPlayer = WorldManager.GetTargetOrSelf(character, args[0], out firstArg);
         }
 
-        var moveToMe = targetPlayer != character && args.Length == 2 && args[1].ToLower() == "tome";
+        var moveToMe = targetPlayer != character && args.Length == 2 && args[1].Equals("tome", System.StringComparison.CurrentCultureIgnoreCase);
 
         if (!moveToMe && args.Length < firstArg + 3 && targetPlayer == character)
         {

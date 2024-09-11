@@ -20,12 +20,12 @@ public class TimeSetSubCommand : SubCommandBase
     public override void Execute(ICharacter character, string triggerArgument, IDictionary<string, ParameterValue> parameters, IMessageOutput messageOutput)
     {
         var oldTime = TimeManager.Instance.GetTime;
-        var hour = (int)oldTime ;
-        if (parameters.ContainsKey("hour"))
-            hour = (int)parameters["hour"];
+        var hour = (int)oldTime;
+        if (parameters.TryGetValue("hour", out var hourValue))
+            hour = (int)hourValue;
         var minute = (int)Math.Floor((oldTime - Math.Truncate(oldTime)) * 60f);
-        if (parameters.ContainsKey("minute"))
-            minute = parameters["minute"];
+        if (parameters.TryGetValue("minute", out var minuteValue))
+            minute = minuteValue;
         var newTime = hour * 1f + (minute / 60f);
         TimeManager.Instance.Set(newTime);
 

@@ -97,14 +97,16 @@ public class AlmightyAttackBehavior : BaseCombatBehavior
     {
         // Experimental handling of guards returning to their home position after chasing somebody
         // TODO: Fix walking animation
-        if (Ai.Owner.AggroTable.Count == 0 && Ai.PathHandler.AiPathPointsRemaining.Count == 0)
+        if (Ai.Owner.AggroTable.IsEmpty && Ai.PathHandler.AiPathPointsRemaining.Count == 0)
         {
             Ai.PathHandler.TargetPosition = Vector3.Zero;
             Ai.Owner.CurrentAlertness = MoveTypeAlertness.Idle;
             Ai.Owner.CurrentGameStance = GameStanceType.Combat;
             Ai.PathHandler.AiPathPointsRemaining.Enqueue(new AiPathPoint()
             {
-                Action = AiPathPointAction.Speed, Param = "3", Position = Ai.HomePosition
+                Action = AiPathPointAction.Speed,
+                Param = "3",
+                Position = Ai.HomePosition
             });
             Ai.GoToFollowPath();
         }

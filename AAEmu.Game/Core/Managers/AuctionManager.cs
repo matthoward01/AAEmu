@@ -274,6 +274,8 @@ public class AuctionManager : Singleton<AuctionManager>
         return LocalizationManager.Instance.Get("items", "name", id, ItemManager.Instance.GetTemplate(id).Name ?? "");
     }
 
+    /* Unused
+
     private ulong GetNextId()
     {
         if (AuctionLots.Count == 0)
@@ -285,6 +287,7 @@ public class AuctionManager : Singleton<AuctionManager>
 
         return maxId + 1;
     }
+    */
 
     private void RemoveAuctionLot(AuctionLot itemToRemove)
     {
@@ -421,7 +424,7 @@ public class AuctionManager : Singleton<AuctionManager>
         var deletedCount = 0;
         var updatedCount = 0;
 
-        if (_deletedAuctionItemIds.Count > 0)
+        if (!_deletedAuctionItemIds.IsEmpty)
         {
             using (var command = connection.CreateCommand())
             {

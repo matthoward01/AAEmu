@@ -1,5 +1,4 @@
-﻿using System.Drawing;
-using AAEmu.Game.Core.Managers;
+﻿using AAEmu.Game.Core.Managers;
 using AAEmu.Game.Core.Managers.Id;
 using AAEmu.Game.Core.Managers.World;
 using AAEmu.Game.Core.Managers.UnitManagers;
@@ -9,7 +8,6 @@ using AAEmu.Game.Models.Game.DoodadObj;
 using AAEmu.Game.Models.Game.NPChar;
 using AAEmu.Game.Utils;
 using System.Globalization;
-using AAEmu.Game.Models.Game.Chat;
 using AAEmu.Game.Utils.Scripts;
 using System.IO;
 using Newtonsoft.Json;
@@ -49,7 +47,7 @@ public class Spawn : ICommand
 
         var unitId = 0u;
 
-        if (args[1].ToLower() == "dummy" && args[0] == "npc")
+        if (args[1].Equals("dummy", System.StringComparison.CurrentCultureIgnoreCase) && args[0] == "npc")
         {
             unitId = DUMMY_NPC_TEMPLATE_ID;
         }

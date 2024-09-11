@@ -77,9 +77,7 @@ public enum SkillResult : byte
     LackSourceItemSet = 0x45,
     LackActability = 0x46,
     UrkStart = 0x46, // Start offset for UnitReqsKindType
-#pragma warning disable CA1069 // Enums values should not be duplicated
     UrkLevel = 0x47,
-#pragma warning restore CA1069 // Enums values should not be duplicated
     UrkAbility = 0x48,
     UrkRace = 0x49,
     UrkGender = 0x4A,
@@ -285,13 +283,13 @@ public enum SkillResultKeys
 /// </summary>
 public static class SkillResultHelper
 {
-    
+
     public static SkillResult SkillResultErrorKeyToId(SkillResultKeys key)
     {
         // if (ClientVersion == r208022)
         return SkillResultErrorKeyToIdFor_r208022(key.ToString());
     }
-    
+
     /// <summary>
     /// Lookup the SkillResult for Version 1.2 r208022
     /// </summary>
@@ -435,7 +433,7 @@ public static class SkillResultHelper
             case "skill_urk_expedition_member": return (SkillResult)130; //	89 ?? Skill_urk_expedition_member
             // case "skill_urk_progress_quest_context": return (SkillResult)131; //	89 ?? Skill_urk_progress_quest_context
             // case "skill_urk_ready_quest_context": return (SkillResult)132; //	89 ?? Skill_urk_ready_quest_context
-           default: return SkillResult.Failure;
+            default: return SkillResult.Failure;
         }
     }
 }
