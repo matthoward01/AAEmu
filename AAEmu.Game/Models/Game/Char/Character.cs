@@ -35,6 +35,8 @@ using AAEmu.Game.Utils;
 
 using MySql.Data.MySqlClient;
 
+#pragma warning disable IDE0079 // Remove unnecessary suppression
+
 namespace AAEmu.Game.Models.Game.Char;
 
 public partial class Character : Unit, ICharacter
@@ -42,7 +44,7 @@ public partial class Character : Unit, ICharacter
     public override UnitTypeFlag TypeFlag { get; } = UnitTypeFlag.Character;
     public override BaseUnitType BaseUnitType => BaseUnitType.Character;
 
-    public static Dictionary<uint, uint> UsedCharacterObjIds { get; } = new();
+    public static Dictionary<uint, uint> UsedCharacterObjIds { get; } = [];
 
     private Dictionary<ushort, string> _options;
 
@@ -191,7 +193,7 @@ public partial class Character : Unit, ICharacter
     /// <summary>
     /// List of ObjIds you have aggro on
     /// </summary>
-    public Dictionary<uint, BaseUnit> IsInAggroListOf { get; set; } = new();
+    public Dictionary<uint, BaseUnit> IsInAggroListOf { get; set; } = [];
 
     public void InitializeLaborCache(short labor, DateTime newTime)
     {
@@ -348,14 +350,16 @@ public partial class Character : Unit, ICharacter
         {
             var formula =
                 FormulaManager.Instance.GetUnitFormula(FormulaOwnerType.Character, UnitFormulaKind.MaxHealth);
-            var parameters = new Dictionary<string, double>();
-            parameters["level"] = Level;
-            parameters["str"] = Str;
-            parameters["dex"] = Dex;
-            parameters["sta"] = Sta;
-            parameters["int"] = Int;
-            parameters["spi"] = Spi;
-            parameters["fai"] = Fai;
+            var parameters = new Dictionary<string, double>
+            {
+                ["level"] = Level,
+                ["str"] = Str,
+                ["dex"] = Dex,
+                ["sta"] = Sta,
+                ["int"] = Int,
+                ["spi"] = Spi,
+                ["fai"] = Fai
+            };
             var res = formula.Evaluate(parameters);
             res = CalculateWithBonuses(res, UnitAttribute.MaxHealth);
 
@@ -370,14 +374,16 @@ public partial class Character : Unit, ICharacter
         {
             var formula =
                 FormulaManager.Instance.GetUnitFormula(FormulaOwnerType.Character, UnitFormulaKind.HealthRegen);
-            var parameters = new Dictionary<string, double>();
-            parameters["level"] = Level;
-            parameters["str"] = Str;
-            parameters["dex"] = Dex;
-            parameters["sta"] = Sta;
-            parameters["int"] = Int;
-            parameters["spi"] = Spi;
-            parameters["fai"] = Fai;
+            var parameters = new Dictionary<string, double>
+            {
+                ["level"] = Level,
+                ["str"] = Str,
+                ["dex"] = Dex,
+                ["sta"] = Sta,
+                ["int"] = Int,
+                ["spi"] = Spi,
+                ["fai"] = Fai
+            };
             var res = formula.Evaluate(parameters);
             // res += Spi / 10;
             res = CalculateWithBonuses(res, UnitAttribute.HealthRegen);
@@ -393,14 +399,16 @@ public partial class Character : Unit, ICharacter
         {
             var formula = FormulaManager.Instance.GetUnitFormula(FormulaOwnerType.Character,
                 UnitFormulaKind.PersistentHealthRegen);
-            var parameters = new Dictionary<string, double>();
-            parameters["level"] = Level;
-            parameters["str"] = Str;
-            parameters["dex"] = Dex;
-            parameters["sta"] = Sta;
-            parameters["int"] = Int;
-            parameters["spi"] = Spi;
-            parameters["fai"] = Fai;
+            var parameters = new Dictionary<string, double>
+            {
+                ["level"] = Level,
+                ["str"] = Str,
+                ["dex"] = Dex,
+                ["sta"] = Sta,
+                ["int"] = Int,
+                ["spi"] = Spi,
+                ["fai"] = Fai
+            };
             var res = formula.Evaluate(parameters);
             res = CalculateWithBonuses(res, UnitAttribute.PersistentHealthRegen);
             res /= 5;
@@ -417,14 +425,16 @@ public partial class Character : Unit, ICharacter
         {
             var formula =
                 FormulaManager.Instance.GetUnitFormula(FormulaOwnerType.Character, UnitFormulaKind.MaxMana);
-            var parameters = new Dictionary<string, double>();
-            parameters["level"] = Level;
-            parameters["str"] = Str;
-            parameters["dex"] = Dex;
-            parameters["sta"] = Sta;
-            parameters["int"] = Int;
-            parameters["spi"] = Spi;
-            parameters["fai"] = Fai;
+            var parameters = new Dictionary<string, double>
+            {
+                ["level"] = Level,
+                ["str"] = Str,
+                ["dex"] = Dex,
+                ["sta"] = Sta,
+                ["int"] = Int,
+                ["spi"] = Spi,
+                ["fai"] = Fai
+            };
             var res = formula.Evaluate(parameters);
             res = CalculateWithBonuses(res, UnitAttribute.MaxMana);
 
@@ -439,14 +449,16 @@ public partial class Character : Unit, ICharacter
         {
             var formula =
                 FormulaManager.Instance.GetUnitFormula(FormulaOwnerType.Character, UnitFormulaKind.ManaRegen);
-            var parameters = new Dictionary<string, double>();
-            parameters["level"] = Level;
-            parameters["str"] = Str;
-            parameters["dex"] = Dex;
-            parameters["sta"] = Sta;
-            parameters["int"] = Int;
-            parameters["spi"] = Spi;
-            parameters["fai"] = Fai;
+            var parameters = new Dictionary<string, double>
+            {
+                ["level"] = Level,
+                ["str"] = Str,
+                ["dex"] = Dex,
+                ["sta"] = Sta,
+                ["int"] = Int,
+                ["spi"] = Spi,
+                ["fai"] = Fai
+            };
             var res = formula.Evaluate(parameters);
             res += Spi / 10;
             res = CalculateWithBonuses(res, UnitAttribute.ManaRegen);
@@ -462,14 +474,16 @@ public partial class Character : Unit, ICharacter
         {
             var formula = FormulaManager.Instance.GetUnitFormula(FormulaOwnerType.Character,
                 UnitFormulaKind.PersistentManaRegen);
-            var parameters = new Dictionary<string, double>();
-            parameters["level"] = Level;
-            parameters["str"] = Str;
-            parameters["dex"] = Dex;
-            parameters["sta"] = Sta;
-            parameters["int"] = Int;
-            parameters["spi"] = Spi;
-            parameters["fai"] = Fai;
+            var parameters = new Dictionary<string, double>
+            {
+                ["level"] = Level,
+                ["str"] = Str,
+                ["dex"] = Dex,
+                ["sta"] = Sta,
+                ["int"] = Int,
+                ["spi"] = Spi,
+                ["fai"] = Fai
+            };
             var res = formula.Evaluate(parameters);
             res /= 5; // TODO ...
             res = CalculateWithBonuses(res, UnitAttribute.PersistentManaRegen);
@@ -611,15 +625,17 @@ public partial class Character : Unit, ICharacter
         {
             var formula =
                 FormulaManager.Instance.GetUnitFormula(FormulaOwnerType.Character, UnitFormulaKind.LevelDps);
-            var parameters = new Dictionary<string, double>();
-            parameters["level"] = Level;
-            parameters["str"] = Str;
-            parameters["dex"] = Dex;
-            parameters["sta"] = Sta;
-            parameters["int"] = Int;
-            parameters["spi"] = Spi;
-            parameters["fai"] = Fai;
-            parameters["ab_level"] = Level; // TODO : Make AbilityLevel
+            var parameters = new Dictionary<string, double>
+            {
+                ["level"] = Level,
+                ["str"] = Str,
+                ["dex"] = Dex,
+                ["sta"] = Sta,
+                ["int"] = Int,
+                ["spi"] = Spi,
+                ["fai"] = Fai,
+                ["ab_level"] = Level // TODO : Make AbilityLevel
+            };
             var res = formula.Evaluate(parameters);
             return (float)res;
         }
@@ -646,14 +662,16 @@ public partial class Character : Unit, ICharacter
         {
             var formula =
                 FormulaManager.Instance.GetUnitFormula(FormulaOwnerType.Character, UnitFormulaKind.MeleeDpsInc);
-            var parameters = new Dictionary<string, double>();
-            parameters["level"] = Level;
-            parameters["str"] = Str;
-            parameters["dex"] = Dex;
-            parameters["sta"] = Sta;
-            parameters["int"] = Int;
-            parameters["spi"] = Spi;
-            parameters["fai"] = Fai;
+            var parameters = new Dictionary<string, double>
+            {
+                ["level"] = Level,
+                ["str"] = Str,
+                ["dex"] = Dex,
+                ["sta"] = Sta,
+                ["int"] = Int,
+                ["spi"] = Spi,
+                ["fai"] = Fai
+            };
             var res = formula.Evaluate(parameters);
             res = CalculateWithBonuses(res, UnitAttribute.MeleeDpsInc);
 
@@ -696,14 +714,16 @@ public partial class Character : Unit, ICharacter
         {
             var formula =
                 FormulaManager.Instance.GetUnitFormula(FormulaOwnerType.Character, UnitFormulaKind.RangedDpsInc);
-            var parameters = new Dictionary<string, double>();
-            parameters["level"] = Level;
-            parameters["str"] = Str;
-            parameters["dex"] = Dex;
-            parameters["sta"] = Sta;
-            parameters["int"] = Int;
-            parameters["spi"] = Spi;
-            parameters["fai"] = Fai;
+            var parameters = new Dictionary<string, double>
+            {
+                ["level"] = Level,
+                ["str"] = Str,
+                ["dex"] = Dex,
+                ["sta"] = Sta,
+                ["int"] = Int,
+                ["spi"] = Spi,
+                ["fai"] = Fai
+            };
             var res = formula.Evaluate(parameters);
             res = CalculateWithBonuses(res, UnitAttribute.RangedDpsInc);
 
@@ -732,14 +752,16 @@ public partial class Character : Unit, ICharacter
         {
             var formula =
                 FormulaManager.Instance.GetUnitFormula(FormulaOwnerType.Character, UnitFormulaKind.SpellDpsInc);
-            var parameters = new Dictionary<string, double>();
-            parameters["level"] = Level;
-            parameters["str"] = Str;
-            parameters["dex"] = Dex;
-            parameters["sta"] = Sta;
-            parameters["int"] = Int;
-            parameters["spi"] = Spi;
-            parameters["fai"] = Fai;
+            var parameters = new Dictionary<string, double>
+            {
+                ["level"] = Level,
+                ["str"] = Str,
+                ["dex"] = Dex,
+                ["sta"] = Sta,
+                ["int"] = Int,
+                ["spi"] = Spi,
+                ["fai"] = Fai
+            };
             var res = formula.Evaluate(parameters);
             res = CalculateWithBonuses(res, UnitAttribute.SpellDpsInc);
 
@@ -767,9 +789,11 @@ public partial class Character : Unit, ICharacter
         {
             var formula =
                 FormulaManager.Instance.GetUnitFormula(FormulaOwnerType.Character, UnitFormulaKind.HealDpsInc);
-            var parameters = new Dictionary<string, double>();
-            parameters["level"] = Level;
-            parameters["spi"] = Spi;
+            var parameters = new Dictionary<string, double>
+            {
+                ["level"] = Level,
+                ["spi"] = Spi
+            };
             var res = formula.Evaluate(parameters);
             res = CalculateWithBonuses(res, UnitAttribute.HealDpsInc);
             return (int)res;
@@ -783,9 +807,11 @@ public partial class Character : Unit, ICharacter
         {
             var formula =
                 FormulaManager.Instance.GetUnitFormula(FormulaOwnerType.Character, UnitFormulaKind.MeleeAntiMiss);
-            var parameters = new Dictionary<string, double>();
-            parameters["str"] = Str; //Str not needed, but maybe we use later
-            parameters["spi"] = Spi;
+            var parameters = new Dictionary<string, double>
+            {
+                ["str"] = Str, //Str not needed, but maybe we use later
+                ["spi"] = Spi
+            };
             var res = formula.Evaluate(parameters);
             res = CalculateWithBonuses(res, UnitAttribute.MeleeAntiMiss);
             res = (1f - ((Facets / 10f) - res) * (1f / Facets)) * 100f;
@@ -802,9 +828,11 @@ public partial class Character : Unit, ICharacter
         {
             var formula =
                 FormulaManager.Instance.GetUnitFormula(FormulaOwnerType.Character, UnitFormulaKind.MeleeCritical);
-            var parameters = new Dictionary<string, double>();
-            parameters["str"] = Str; //Str not needed, but maybe we use later
-            parameters["dex"] = Dex;
+            var parameters = new Dictionary<string, double>
+            {
+                ["str"] = Str, //Str not needed, but maybe we use later
+                ["dex"] = Dex
+            };
             var res = formula.Evaluate(parameters);
             res = CalculateWithBonuses(res, UnitAttribute.MeleeCritical);
             res = res * (1f / Facets) * 100;
@@ -842,9 +870,11 @@ public partial class Character : Unit, ICharacter
         {
             var formula =
                 FormulaManager.Instance.GetUnitFormula(FormulaOwnerType.Character, UnitFormulaKind.RangedAntiMiss);
-            var parameters = new Dictionary<string, double>();
-            parameters["dex"] = Dex; //Str not needed, but maybe we use later
-            parameters["spi"] = Spi;
+            var parameters = new Dictionary<string, double>
+            {
+                ["dex"] = Dex, //Str not needed, but maybe we use later
+                ["spi"] = Spi
+            };
             var res = formula.Evaluate(parameters);
             res = CalculateWithBonuses(res, UnitAttribute.RangedAntiMiss);
             res = (1f - ((Facets / 10f) - res) * (1f / Facets)) * 100f;
@@ -861,9 +891,11 @@ public partial class Character : Unit, ICharacter
         {
             var formula =
                 FormulaManager.Instance.GetUnitFormula(FormulaOwnerType.Character, UnitFormulaKind.RangedCritical);
-            var parameters = new Dictionary<string, double>();
-            parameters["dex"] = Dex; //Str not needed, but maybe we use later
-            parameters["int"] = Int;
+            var parameters = new Dictionary<string, double>
+            {
+                ["dex"] = Dex, //Str not needed, but maybe we use later
+                ["int"] = Int
+            };
             var res = formula.Evaluate(parameters);
             res = CalculateWithBonuses(res, UnitAttribute.RangedCritical);
             res = res * (1f / Facets) * 100;
@@ -901,9 +933,11 @@ public partial class Character : Unit, ICharacter
         {
             var formula =
                 FormulaManager.Instance.GetUnitFormula(FormulaOwnerType.Character, UnitFormulaKind.SpellAntiMiss);
-            var parameters = new Dictionary<string, double>();
-            parameters["int"] = Int;
-            parameters["spi"] = Spi;
+            var parameters = new Dictionary<string, double>
+            {
+                ["int"] = Int,
+                ["spi"] = Spi
+            };
             var res = formula.Evaluate(parameters);
             res = CalculateWithBonuses(res, UnitAttribute.SpellAntiMiss);
             res = (1f - ((Facets / 10f) - res) * (1f / Facets)) * 100f;
@@ -920,8 +954,10 @@ public partial class Character : Unit, ICharacter
         {
             var formula =
                 FormulaManager.Instance.GetUnitFormula(FormulaOwnerType.Character, UnitFormulaKind.SpellCritical);
-            var parameters = new Dictionary<string, double>();
-            parameters["int"] = Int; //Str not needed, but maybe we use later
+            var parameters = new Dictionary<string, double>
+            {
+                ["int"] = Int //Str not needed, but maybe we use later
+            };
             var res = formula.Evaluate(parameters);
             res = CalculateWithBonuses(res, UnitAttribute.SpellCritical);
             res = (float)CalculateWithBonuses(res, UnitAttribute.SpellDamageCritical);
@@ -962,8 +998,10 @@ public partial class Character : Unit, ICharacter
         {
             var formula =
                 FormulaManager.Instance.GetUnitFormula(FormulaOwnerType.Character, UnitFormulaKind.HealCritical);
-            var parameters = new Dictionary<string, double>();
-            parameters["spi"] = Spi; //Str not needed, but maybe we use later
+            var parameters = new Dictionary<string, double>
+            {
+                ["spi"] = Spi //Str not needed, but maybe we use later
+            };
             var res = formula.Evaluate(parameters);
             res = CalculateWithBonuses(res, UnitAttribute.HealCritical);
             res = res * (1f / Facets) * 100;
@@ -1000,14 +1038,16 @@ public partial class Character : Unit, ICharacter
         get
         {
             var formula = FormulaManager.Instance.GetUnitFormula(FormulaOwnerType.Character, UnitFormulaKind.Armor);
-            var parameters = new Dictionary<string, double>();
-            parameters["level"] = Level;
-            parameters["str"] = Str;
-            parameters["dex"] = Dex;
-            parameters["sta"] = Sta;
-            parameters["int"] = Int;
-            parameters["spi"] = Spi;
-            parameters["fai"] = Fai;
+            var parameters = new Dictionary<string, double>
+            {
+                ["level"] = Level,
+                ["str"] = Str,
+                ["dex"] = Dex,
+                ["sta"] = Sta,
+                ["int"] = Int,
+                ["spi"] = Spi,
+                ["fai"] = Fai
+            };
             var res = (int)formula.Evaluate(parameters);
             foreach (var item in Inventory.Equipment.Items)
             {
@@ -1038,14 +1078,16 @@ public partial class Character : Unit, ICharacter
         {
             var formula =
                 FormulaManager.Instance.GetUnitFormula(FormulaOwnerType.Character, UnitFormulaKind.MagicResist);
-            var parameters = new Dictionary<string, double>();
-            parameters["level"] = Level;
-            parameters["str"] = Str;
-            parameters["dex"] = Dex;
-            parameters["sta"] = Sta;
-            parameters["int"] = Int;
-            parameters["spi"] = Spi;
-            parameters["fai"] = Fai;
+            var parameters = new Dictionary<string, double>
+            {
+                ["level"] = Level,
+                ["str"] = Str,
+                ["dex"] = Dex,
+                ["sta"] = Sta,
+                ["int"] = Int,
+                ["spi"] = Spi,
+                ["fai"] = Fai
+            };
             var res = (int)formula.Evaluate(parameters);
             foreach (var item in Inventory.Equipment.Items)
             {
@@ -1123,8 +1165,10 @@ public partial class Character : Unit, ICharacter
         {
             var formula =
                 FormulaManager.Instance.GetUnitFormula(FormulaOwnerType.Character, UnitFormulaKind.Facet);
-            var parameters = new Dictionary<string, double>();
-            parameters["level"] = Level;
+            var parameters = new Dictionary<string, double>
+            {
+                ["level"] = Level
+            };
             var res = formula.Evaluate(parameters);
             res = CalculateWithBonuses(res, UnitAttribute.Facets);
             return (int)res;
@@ -1138,9 +1182,11 @@ public partial class Character : Unit, ICharacter
         {
             var formula =
                 FormulaManager.Instance.GetUnitFormula(FormulaOwnerType.Character, UnitFormulaKind.Dodge);
-            var parameters = new Dictionary<string, double>();
-            parameters["dex"] = Dex;
-            parameters["int"] = Int;
+            var parameters = new Dictionary<string, double>
+            {
+                ["dex"] = Dex,
+                ["int"] = Int
+            };
             var res = formula.Evaluate(parameters);
             res = CalculateWithBonuses(res, UnitAttribute.Dodge);
             res = (res * (1f / Facets) * 100f);
@@ -1156,9 +1202,11 @@ public partial class Character : Unit, ICharacter
         {
             var formula =
                 FormulaManager.Instance.GetUnitFormula(FormulaOwnerType.Character, UnitFormulaKind.MeleeParry);
-            var parameters = new Dictionary<string, double>();
-            parameters["str"] = Str;
-            parameters["sta"] = Sta;
+            var parameters = new Dictionary<string, double>
+            {
+                ["str"] = Str,
+                ["sta"] = Sta
+            };
             var res = formula.Evaluate(parameters);
             res = CalculateWithBonuses(res, UnitAttribute.MeleeParry);
             res = (res * (1f / Facets) * 100f);
@@ -1197,8 +1245,10 @@ public partial class Character : Unit, ICharacter
                 return 0f;
             var formula =
                 FormulaManager.Instance.GetUnitFormula(FormulaOwnerType.Character, UnitFormulaKind.Block);
-            var parameters = new Dictionary<string, double>();
-            parameters["str"] = Str;
+            var parameters = new Dictionary<string, double>
+            {
+                ["str"] = Str
+            };
             var res = formula.Evaluate(parameters);
             res = CalculateWithBonuses(res, UnitAttribute.Block);
             res = (res * (1f / Facets) * 100f);
@@ -1267,11 +1317,11 @@ public partial class Character : Unit, ICharacter
 
     public Character(UnitCustomModelParams modelParams)
     {
-        _options = new Dictionary<ushort, string>();
+        _options = [];
         _hostilePlayers = new ConcurrentDictionary<uint, DateTime>();
         Breath = LungCapacity;
         ModelParams = modelParams;
-        Subscribers = new List<IDisposable>();
+        Subscribers = [];
         ChargeLock = new object();
         FishSchool = new FishSchool(this);
         //Events.OnDisconnect += OnDisconnect;
@@ -1390,7 +1440,7 @@ public partial class Character : Unit, ICharacter
                 itemTasks.Add(new MoneyChangeBank(amount));
                 break;
         }
-        SendPacket(new SCItemTaskSuccessPacket(itemTaskType, itemTasks, new List<ulong>()));
+        SendPacket(new SCItemTaskSuccessPacket(itemTaskType, itemTasks, []));
         return true;
     }
 
@@ -1422,9 +1472,11 @@ public partial class Character : Unit, ICharacter
         // Only grant xp if consuming labor
         if (change < 0)
         {
-            var parameters = new Dictionary<string, double>();
-            parameters.Add("labor_power", -change);
-            parameters.Add("pc_level", Level);
+            var parameters = new Dictionary<string, double>
+            {
+                { "labor_power", -change },
+                { "pc_level", Level }
+            };
             var formula = FormulaManager.Instance.GetFormula((uint)FormulaKind.ExpByLaborPower);
             var xpToAdd = (int)formula.Evaluate(parameters);
             AddExp(xpToAdd, true);
@@ -1654,7 +1706,6 @@ public partial class Character : Unit, ICharacter
         }
     }
 
-
     public void SetAction(byte slot, ActionSlotType type, uint actionId)
     {
         Slots[slot].Type = type;
@@ -1834,7 +1885,7 @@ public partial class Character : Unit, ICharacter
             ChangeMoney(SlotType.Inventory, -repairCost);
         }
 
-        Connection.SendPacket(new SCItemTaskSuccessPacket(ItemTaskType.Repair, tasks, new List<ulong>()));
+        Connection.SendPacket(new SCItemTaskSuccessPacket(ItemTaskType.Repair, tasks, []));
     }
 
     public override void Regenerate()
@@ -2502,7 +2553,7 @@ public partial class Character : Unit, ICharacter
         base.RemoveVisibleObject(character);
 
         if (this != character) // Never send to self, or the client crashes
-            character.SendPacket(new SCUnitsRemovedPacket(new[] { ObjId }));
+            character.SendPacket(new SCUnitsRemovedPacket([ObjId]));
     }
 
     public PacketStream Write(PacketStream stream)

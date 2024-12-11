@@ -92,12 +92,12 @@ public class Transform : IDisposable
         _owningObject = owningObject;
         _parentTransform = parentTransform;
         _stickyParentTransform = stickyParentTransform;
-        _children = new List<Transform>();
+        _children = [];
         _localPosRot = new PositionAndRotation();
         //_stickyParentTransform = null; // TODO why are we doing this?
-        _stickyChildren = new List<Transform>();
+        _stickyChildren = [];
         _lastFinalizePos = Vector3.Zero;
-        _debugTrackers = new List<Character>();
+        _debugTrackers = [];
     }
 
     public Transform(GameObject owningObject, Transform parentTransform = null, Transform stickyParentTransform = null)
@@ -331,9 +331,8 @@ public class Transform : IDisposable
 
     private void InternalDetachChild(Transform child)
     {
-        if (_children.Contains(child))
+        if (_children.Remove(child))
         {
-            _children.Remove(child);
             // TODO: This needs better handling and take into account rotations
             child.Local.Rotation += World.Rotation;
             child.Local.Position += World.Position;
@@ -642,9 +641,8 @@ public class Transform : IDisposable
 
     public bool ToggleDebugTracker(Character player)
     {
-        if (_debugTrackers.Contains(player))
+        if (_debugTrackers.Remove(player))
         {
-            _debugTrackers.Remove(player);
             return false;
         }
         else

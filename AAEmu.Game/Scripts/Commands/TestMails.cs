@@ -10,7 +10,7 @@ namespace AAEmu.Game.Scripts.Commands;
 
 public class TestMails : ICommand
 {
-    public string[] CommandNames { get; set; } = new string[] { "testmail", "test_mail" };
+    public string[] CommandNames { get; set; } = ["testmail", "test_mail"];
 
     public void OnLoad()
     {
@@ -41,7 +41,7 @@ public class TestMails : ICommand
             // List all mailTypes
             CommandManager.SendNormalText(this, messageOutput, $"{GetCommandHelpText()}\rPossible MailTypes:");
             var s = string.Empty;
-            foreach (var t in Enum.GetValues(typeof(MailType)))
+            foreach (var t in Enum.GetValues<MailType>())
             {
                 s += $"{(byte)t}={t}";
                 s += "  ";
@@ -219,7 +219,6 @@ public class TestMails : ICommand
                     }
                 }
             }
-
 
             mail.Send();
         }

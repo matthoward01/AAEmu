@@ -14,6 +14,8 @@ using AAEmu.Game.Models.Game.Quests.Templates;
 using AAEmu.Game.Models.Game.Skills;
 using AAEmu.Game.Models.StaticValues;
 
+#pragma warning disable IDE0052 // Remove unread private members
+
 namespace AAEmu.Game.Models.Game.Quests;
 
 public partial class Quest : PacketMarshaler
@@ -50,7 +52,7 @@ public partial class Quest : PacketMarshaler
     /// <summary>
     /// Used to check Progress step
     /// </summary>
-    public List<bool> ProgressStepResults { get; set; } = new();
+    public List<bool> ProgressStepResults { get; set; } = [];
 
     /// <summary>
     /// Current Quest Status
@@ -228,8 +230,8 @@ public partial class Quest : PacketMarshaler
         Objectives = new int[MaxObjectiveCount];
         SupplyItem = 0;
         ObjId = 0;
-        QuestRewardItemsPool = new List<ItemCreationDefinition>();
-        QuestCleanupItemsPool = new List<ItemCreationDefinition>();
+        QuestRewardItemsPool = [];
+        QuestCleanupItemsPool = [];
         ReadyToReportNpc = false;
 
         InitializeQuestActs();
@@ -324,7 +326,7 @@ public partial class Quest : PacketMarshaler
                         res = false;
                     }
 
-                Owner.SendPacket(new SCQuestRewardedByMailPacket(new uint[] { TemplateId }));
+                Owner.SendPacket(new SCQuestRewardedByMailPacket([TemplateId]));
             }
             else
             {

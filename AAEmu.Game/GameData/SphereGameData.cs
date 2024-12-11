@@ -33,16 +33,16 @@ public class SphereGameData : Singleton<SphereGameData>, IGameDataLoader
 
     public void Load(SqliteConnection connection)
     {
-        _spheres = new Dictionary<uint, Spheres>();
-        _sphereQuests = new Dictionary<uint, SphereQuests>();
-        _sphereSkills = new Dictionary<uint, SphereSkills>();
-        _sphereSounds = new Dictionary<uint, SphereSounds>();
-        _sphereDoodadInteracts = new Dictionary<uint, SphereDoodadInteracts>();
-        _sphereChatBubbles = new Dictionary<uint, SphereChatBubbles>();
-        _sphereBuffs = new Dictionary<uint, SphereBuffs>();
-        _sphereBubbles = new Dictionary<uint, SphereBubbles>();
-        _sphereAcceptQuests = new Dictionary<uint, SphereAcceptQuests>();
-        _sphereAcceptQuestQuests = new Dictionary<uint, SphereAcceptQuestQuests>();
+        _spheres = [];
+        _sphereQuests = [];
+        _sphereSkills = [];
+        _sphereSounds = [];
+        _sphereDoodadInteracts = [];
+        _sphereChatBubbles = [];
+        _sphereBuffs = [];
+        _sphereBubbles = [];
+        _sphereAcceptQuests = [];
+        _sphereAcceptQuestQuests = [];
 
         using (var command = connection.CreateCommand())
         {
@@ -280,7 +280,7 @@ public class SphereGameData : Singleton<SphereGameData>, IGameDataLoader
         var questTemplate = QuestManager.Instance.GetTemplate(questId);
         if (questTemplate == null)
             return null;
-        foreach (QuestComponentKind step in Enum.GetValues(typeof(QuestComponentKind)))
+        foreach (QuestComponentKind step in Enum.GetValues<QuestComponentKind>())
         {
             var components = questTemplate.GetComponents(step);
             if (components.Length == 0)

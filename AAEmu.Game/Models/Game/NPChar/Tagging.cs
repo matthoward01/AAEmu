@@ -4,17 +4,15 @@ using AAEmu.Game.Core.Managers;
 using AAEmu.Game.Core.Managers.World;
 using System.Collections.Generic;
 
-#pragma warning disable IDE0130 // Namespace does not match folder structure
-
 namespace AAEmu.Game.Models.Game.NPChar;
 
 public class Tagging
 {
     private object _lock = new();
-    private Dictionary<Character, int> _taggers = new();
+    private Dictionary<Character, int> _taggers = [];
     private Character _tagger;
     private uint _tagTeam;
-    private int _totalDamage;
+    // private int _totalDamage;
 
     public Unit Owner { get; }
 
@@ -45,10 +43,10 @@ public class Tagging
     }
     public void ClearAllTaggers()
     {
-        _taggers = new Dictionary<Character, int>();
+        _taggers = [];
         _tagger = null;
         _tagTeam = 0;
-        _totalDamage = 0;
+        // _totalDamage = 0;
     }
     public void AddTagger(Unit checkUnit, int damage)
     {
@@ -60,10 +58,6 @@ public class Tagging
             {
                 checkUnit = WorldManager.Instance.GetCharacterByObjId(pm.OwnerObjId) ?? checkUnit;
             }
-
-
-
-
 
             if (checkUnit is Character pl)
             {
@@ -81,7 +75,8 @@ public class Tagging
                     _taggers[pl] += damage;
                 }
 
-                _totalDamage += damage;
+                // _totalDamage += damage;
+
                 // Check if the character is in a party
                 if (pl.InParty)
                 {
@@ -113,7 +108,6 @@ public class Tagging
 
                         _tagTeam = checkTeam.Id;
 
-
                     }
                 }
                 else
@@ -126,7 +120,6 @@ public class Tagging
                 }
             }
             //TODO: packet to set red-but-not-aggro HP bar for taggers, "dull red" HP bar for not-taggers
-
 
         }
     }

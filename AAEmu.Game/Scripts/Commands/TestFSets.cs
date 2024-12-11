@@ -9,7 +9,7 @@ namespace AAEmu.Game.Scripts.Commands;
 
 public class TestFSets : ICommand
 {
-    public string[] CommandNames { get; set; } = new string[] { "testfsets", "test_fsets" };
+    public string[] CommandNames { get; set; } = ["testfsets", "test_fsets"];
 
     public void OnLoad()
     {
@@ -28,7 +28,7 @@ public class TestFSets : ICommand
 
     public void Execute(Character character, string[] args, IMessageOutput messageOutput)
     {
-        foreach (Feature fObj in Enum.GetValues(typeof(Feature)))
+        foreach (Feature fObj in Enum.GetValues<Feature>())
         {
             if (FeaturesManager.Fsets.Check(fObj))
             {

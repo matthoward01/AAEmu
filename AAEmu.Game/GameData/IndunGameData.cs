@@ -9,15 +9,11 @@ using AAEmu.Game.Utils.DB;
 
 using Microsoft.Data.Sqlite;
 
-using NLog;
-
 namespace AAEmu.Game.GameData;
 
 [GameData]
 public class IndunGameData : Singleton<IndunGameData>, IGameDataLoader
 {
-    private Logger Logger = LogManager.GetCurrentClassLogger();
-
     private Dictionary<uint, IndunAction> _indunActions;
     private Dictionary<uint, List<IndunEvent>> _indunEvents;
     private Dictionary<uint, IndunZone> _indunZones;
@@ -34,7 +30,7 @@ public class IndunGameData : Singleton<IndunGameData>, IGameDataLoader
     {
         if (_indunEvents != null && _indunEvents.TryGetValue(zoneGroupId, out var value))
             return value;
-        return new List<IndunEvent>();
+        return [];
     }
 
     public IndunAction GetIndunActionById(uint indunActionId)
@@ -69,10 +65,10 @@ public class IndunGameData : Singleton<IndunGameData>, IGameDataLoader
 
     public void Load(SqliteConnection connection)
     {
-        _indunActions = new Dictionary<uint, IndunAction>();
-        _indunEvents = new Dictionary<uint, List<IndunEvent>>();
-        _indunZones = new Dictionary<uint, IndunZone>();
-        _indunRooms = new Dictionary<uint, IndunRoom>();
+        _indunActions = [];
+        _indunEvents = [];
+        _indunZones = [];
+        _indunRooms = [];
 
         #region Actions
         using (var command = connection.CreateCommand())
@@ -188,7 +184,7 @@ public class IndunGameData : Singleton<IndunGameData>, IGameDataLoader
                     indunEvent.DoodadFuncGroupId = reader.GetUInt32("doodad_func_group_id");
 
                     if (!_indunEvents.ContainsKey(indunEvent.ZoneGroupId))
-                        _indunEvents.Add(indunEvent.ZoneGroupId, new List<IndunEvent>());
+                        _indunEvents.Add(indunEvent.ZoneGroupId, []);
 
                     _indunEvents[indunEvent.ZoneGroupId].Add(indunEvent);
                 }
@@ -214,7 +210,7 @@ public class IndunGameData : Singleton<IndunGameData>, IGameDataLoader
                     indunEvent.RoomId = reader.GetUInt32("room_id");
 
                     if (!_indunEvents.ContainsKey(indunEvent.ZoneGroupId))
-                        _indunEvents.Add(indunEvent.ZoneGroupId, new List<IndunEvent>());
+                        _indunEvents.Add(indunEvent.ZoneGroupId, []);
 
                     _indunEvents[indunEvent.ZoneGroupId].Add(indunEvent);
                 }
@@ -240,7 +236,7 @@ public class IndunGameData : Singleton<IndunGameData>, IGameDataLoader
                     indunEvent.NpcId = reader.GetUInt32("npc_id");
 
                     if (!_indunEvents.ContainsKey(indunEvent.ZoneGroupId))
-                        _indunEvents.Add(indunEvent.ZoneGroupId, new List<IndunEvent>());
+                        _indunEvents.Add(indunEvent.ZoneGroupId, []);
 
                     _indunEvents[indunEvent.ZoneGroupId].Add(indunEvent);
                 }
@@ -266,7 +262,7 @@ public class IndunGameData : Singleton<IndunGameData>, IGameDataLoader
                     indunEvent.NpcId = reader.GetUInt32("npc_id");
 
                     if (!_indunEvents.ContainsKey(indunEvent.ZoneGroupId))
-                        _indunEvents.Add(indunEvent.ZoneGroupId, new List<IndunEvent>());
+                        _indunEvents.Add(indunEvent.ZoneGroupId, []);
 
                     _indunEvents[indunEvent.ZoneGroupId].Add(indunEvent);
                 }
@@ -292,7 +288,7 @@ public class IndunGameData : Singleton<IndunGameData>, IGameDataLoader
                     indunEvent.NpcId = reader.GetUInt32("npc_id");
 
                     if (!_indunEvents.ContainsKey(indunEvent.ZoneGroupId))
-                        _indunEvents.Add(indunEvent.ZoneGroupId, new List<IndunEvent>());
+                        _indunEvents.Add(indunEvent.ZoneGroupId, []);
 
                     _indunEvents[indunEvent.ZoneGroupId].Add(indunEvent);
                 }
@@ -318,7 +314,7 @@ public class IndunGameData : Singleton<IndunGameData>, IGameDataLoader
                     indunEvent.NpcId = reader.GetUInt32("npc_id");
 
                     if (!_indunEvents.ContainsKey(indunEvent.ZoneGroupId))
-                        _indunEvents.Add(indunEvent.ZoneGroupId, new List<IndunEvent>());
+                        _indunEvents.Add(indunEvent.ZoneGroupId, []);
 
                     _indunEvents[indunEvent.ZoneGroupId].Add(indunEvent);
                 }
