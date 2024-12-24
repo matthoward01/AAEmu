@@ -452,7 +452,7 @@ Dist
 ushort
 attr
 zonename
-args
+typeof
 kitnames
 itemkits
 itemkitnames
@@ -489,3 +489,4 @@ genrand
 hiroshima
 boolean
 ter
+lootpack

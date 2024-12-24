@@ -929,6 +929,9 @@ public class SpawnManager : Singleton<SpawnManager>
         return res;
     }
 
+    /// <summary>
+    /// Handles timed re-spawning and de-spawning tick
+    /// </summary>
     private void CheckRespawns()
     {
         while (_work)
@@ -952,10 +955,10 @@ public class SpawnManager : Singleton<SpawnManager>
                 }
             }
 
-            var despawns = GetDespawnsReady();
-            if (despawns.Count > 0)
+            var deSpawns = GetDespawnsReady();
+            if (deSpawns.Count > 0)
             {
-                foreach (var obj in despawns)
+                foreach (var obj in deSpawns)
                 {
                     if (obj.Despawn >= DateTime.UtcNow)
                         continue;
@@ -977,6 +980,16 @@ public class SpawnManager : Singleton<SpawnManager>
                         obj.Delete();
                     }
                     RemoveDespawn(obj);
+                }
+            }
+
+            // Check if any Npcs with loot need to be made public
+            var makePublic = WorldManager.Instance.GetNpcsToMakePublicLooting();
+            if (makePublic.Count > 0)
+            {
+                foreach (var npc in makePublic)
+                {
+                    npc.LootingContainer.MakeLootPublic();
                 }
             }
 
@@ -1070,4 +1083,18 @@ public class SpawnManager : Singleton<SpawnManager>
     {
         return _npcEventSpawners.Remove(from, out _);
     }
+    
+    /// <summary>
+    /// Gets a list of all Treasure Chests in the world that can be dug up
+    /// </summary>
+    /// <returns></returns>
+    public List<DoodadSpawner> GetTreasureChestDoodadSpawners()
+    {
+        var chestTemplateIds = DoodadManager.Instance.GetTreasureChestTemplateIds();
+        if (chestTemplateIds == null)
+            return [];
+        var spawnerList = _doodadSpawners.GetValueOrDefault((byte)WorldManager.DefaultWorldId).ToDictionary();
+        return spawnerList.Values.Where(ds => chestTemplateIds.Contains(ds.RespawnDoodadTemplateId) || chestTemplateIds.Contains(ds.UnitId)).ToList();;
+    }
+
 }
