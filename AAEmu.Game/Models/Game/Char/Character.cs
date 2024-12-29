@@ -1462,8 +1462,11 @@ public partial class Character : Unit, ICharacter
     {
         var actabilityChange = 0;
         byte actabilityStep = 0;
+        var expMultiplier = 1f;
         if (actabilityId > 0)
         {
+            // Get multiplier before adding points
+            expMultiplier = Actability.Actabilities[(uint)actabilityId].GetExpMultiplier();
             actabilityChange = Math.Abs(change);
             actabilityStep = Actability.Actabilities[(uint)actabilityId].Step;
             actabilityChange = Actability.AddPoint((uint)actabilityId, actabilityChange);
@@ -1478,7 +1481,7 @@ public partial class Character : Unit, ICharacter
                 { "pc_level", Level }
             };
             var formula = FormulaManager.Instance.GetFormula((uint)FormulaKind.ExpByLaborPower);
-            var xpToAdd = (int)formula.Evaluate(parameters);
+            var xpToAdd = (int)(formula.Evaluate(parameters) * expMultiplier);
             AddExp(xpToAdd, true);
         }
 
