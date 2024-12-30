@@ -9,10 +9,8 @@ using AAEmu.Game.Models.Game.NPChar;
 using AAEmu.Game.Utils;
 using System.Globalization;
 using AAEmu.Game.Utils.Scripts;
+using System.Xml;
 using System.IO;
-using Newtonsoft.Json;
-using System.Collections.Generic;
-using System;
 
 namespace AAEmu.Game.Scripts.Commands;
 
@@ -122,7 +120,7 @@ public class Spawn : ICommand
                     }
                     if (!NpcManager.Instance.Exist(unitId))
                     {
-                        character.SendMessage(ChatType.System, $"[Spawn] NPC {unitId} don't exist|r", Color.Red);
+                        CommandManager.SendErrorText(this, messageOutput, $"Doodad {unitId} don't exist");
                         return;
                     }
                     var newNpcSpawner = new NpcSpawner();
@@ -135,18 +133,20 @@ public class Spawn : ICommand
                     if ((args.Length > 2) && (float.TryParse(args[2], NumberStyles.Float, CultureInfo.InvariantCulture, out var newSpawnerRotZ)))
                     {
                         angle = newSpawnerRotZ.DegToRad();
-                        character.SendMessage($"[Spawn] NPC {unitId} using angle {newSpawnerRotZ}° = {angle} rad");
+                        CommandManager.SendNormalText(this, messageOutput,
+                            $"Spawn Doodad {unitId} using user provided angle {angle} rad");
                     }
                     else
                     {
                         angle = angle.DegToRad();
-                        character.SendMessage($"[Spawn] NPC {unitId} facing you using angle {angle} rad");
+                        CommandManager.SendNormalText(this, messageOutput,
+                            $"Spawn Doodad {unitId} using user provided angle {angle} rad");
                     }
                     newNpcSpawner.Position.Yaw = angle;
                     newNpcSpawner.Position.Pitch = 0;
                     newNpcSpawner.Position.Roll = 0;
                     int.TryParse(unitId.ToString(), out int id);
-                    CreateSpawnJson(id, newNpcSpawner.Position.X, newNpcSpawner.Position.Y, newNpcSpawner.Position.Z, angle, "NewSpawns");
+                    //CreateSpawnJson(id, newNpcSpawner.Position.X, newNpcSpawner.Position.Y, newNpcSpawner.Position.Z, angle, "NewSpawns");
                     SpawnManager.Instance.AddNpcSpawner(newNpcSpawner);
 
                     newNpcSpawner.SpawnAll();
@@ -190,7 +190,7 @@ public class Spawn : ICommand
                 case "createdoo":
                     if (!DoodadManager.Instance.Exist(unitId))
                     {
-                        character.SendMessage(ChatType.System, $"[Spawn] Doodad {unitId} don't exist", Color.Red);
+                        CommandManager.SendErrorText(this, messageOutput, $"Doodad {unitId} don't exist");
                         return;
                     }
                     var doodadNewSpawner = new DoodadSpawner();
@@ -202,18 +202,20 @@ public class Spawn : ICommand
                     if ((args.Length > 2) && (float.TryParse(args[2], NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var dooDegrees)))
                     {
                         angle = dooDegrees.DegToRad();
-                        character.SendMessage($"[Spawn] Doodad {unitId} using user provided angle {dooDegrees}° = {angle} rad");
+                        CommandManager.SendNormalText(this, messageOutput,
+                            $"Spawn Doodad {unitId} using user provided angle {dooDegrees}° = {angle} rad");
                     }
                     else
                     {
                         angle = angle.DegToRad();
-                        character.SendMessage($"[Spawn] Doodad {unitId} facing you, using characters angle {angle}");
+                        CommandManager.SendNormalText(this, messageOutput,
+                            $"Spawn Doodad {unitId} facing you, using characters angle {angle}");
                     }
                     doodadNewSpawner.Position.Yaw = angle;
                     doodadNewSpawner.Position.Pitch = 0;
                     doodadNewSpawner.Position.Roll = 0;
                     int.TryParse(unitId.ToString(), out int idDoo);
-                    CreateSpawnJson(idDoo, doodadNewSpawner.Position.X, doodadNewSpawner.Position.Y, doodadNewSpawner.Position.Z, angle, "NewDooDadSpawns");
+                    //CreateSpawnJson(idDoo, doodadNewSpawner.Position.X, doodadNewSpawner.Position.Y, doodadNewSpawner.Position.Z, angle, "NewDooDadSpawns");
                     doodadNewSpawner.Spawn(0, 0, character.ObjId);
                     break;
             }
@@ -222,7 +224,7 @@ public class Spawn : ICommand
             character.SendMessage("|cFFFF0000[Spawn] Throw parse unitId|r");
     }
 
-    public void CreateSpawnJson(int unitId, double x, double y, double z, double angle, string fileName)
+    /*public void CreateSpawnJson(int unitId, double x, double y, double z, double angle, string fileName)
     {
         string jsonFileName = Path.Combine("Data", "Worlds", "main_world", $"{fileName}.json");
         string jsonFileName2 = Path.Combine("bin", "Debug", "net8.0", "Data", "Worlds", "main_world", $"{fileName}.json");
@@ -257,7 +259,7 @@ public class Spawn : ICommand
         // Write the JSON to the file
         File.WriteAllText(jsonFileName, json);
         File.WriteAllText(jsonFileName2, json);
-    }
+    }*/
 }    
 
 public class SpawnUnit
