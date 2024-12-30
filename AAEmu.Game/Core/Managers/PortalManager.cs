@@ -139,18 +139,18 @@ public class PortalManager : Singleton<PortalManager>
 
     public void Load()
     {
-        _openPortalInlandReagents = new Dictionary<uint, OpenPortalReagents>();
-        _openPortalOutlandReagents = new Dictionary<uint, OpenPortalReagents>();
+        _openPortalInlandReagents = [];
+        _openPortalOutlandReagents = [];
         //_allDistrictPortals = new Dictionary<uint, Portal>();
         //_allDistrictPortalsKey = new Dictionary<uint, uint>();
-        _districtReturnPoints = new Dictionary<uint, DistrictReturnPoints>();
+        _districtReturnPoints = [];
 
-        _recalls = new Dictionary<uint, List<Portal>>();
-        _respawns = new Dictionary<uint, Portal>();
-        _worldgates = new Dictionary<uint, Portal>();
-        _recallsKey = new Dictionary<uint, uint>();
-        _respawnsKey = new Dictionary<uint, uint>();
-        _worldgatesKey = new Dictionary<uint, uint>();
+        _recalls = [];
+        _respawns = [];
+        _worldgates = [];
+        _recallsKey = [];
+        _respawnsKey = [];
+        _worldgatesKey = [];
 
         Logger.Info("Loading Portals ...");
 
@@ -427,7 +427,6 @@ public class PortalManager : Singleton<PortalManager>
         var portalInfo = (Models.Game.Units.Portal)WorldManager.Instance.GetNpc(objId);
         if (portalInfo == null) return;
 
-
         //have Overburdened buff cannot UsePortal
         if (character.Buffs.CheckBuffTag((uint)BuffConstants.Overburdened))
         {
@@ -470,14 +469,36 @@ public class PortalManager : Singleton<PortalManager>
         owner.Portals.RemoveFromBookPortal(portalInfo, isPrivate);
     }
 
+    /// <summary>
+    /// Gets the closest valid return portal (respawn) location for a given player
+    /// </summary>
+    /// <param name="character"></param>
+    /// <returns></returns>
     public Portal GetClosestReturnPortal(Character character)
     {
-        var cxyz = character.Transform.World.Position;
+        var currentPosition = character.Transform.World.Position;
         var distance = 999999f;
         var portal = new Portal();
+        // Fail-safe coordinates
+        portal.X = currentPosition.X;
+        portal.Y = currentPosition.Y;
+        portal.Z = currentPosition.Z;
+        portal.ZoneId = character.Transform.ZoneId;
 
         foreach (var (_, value) in _respawns)
         {
+            // Check against district specific faction respawns
+            var districts = _districtReturnPoints.Values.Where(d => d.ReturnPointId == value.Id).ToList();
+            if (districts.Count > 0)
+            {
+                var factions = districts.Select(d => d.FactionId).Distinct().ToList();
+                if ((factions.Count > 0) && !factions.Contains(character.Faction.MotherId) && !factions.Contains(character.Faction.Id))
+                {
+                    continue;
+                }
+            }
+
+            // Check if it's a closed zone (for non-admins)
             if (character is { AccessLevel: < 100 })
             {
                 var zone = ZoneManager.Instance.GetZoneByKey(value.ZoneId);
@@ -486,10 +507,14 @@ public class PortalManager : Singleton<PortalManager>
                     continue;
                 }
             }
-            //if (!value.Name.ToLower().Contains("respawn")) { continue; }
-            var pxyz = new Vector3(value.X, value.Y, value.Z);
-            var dist = MathUtil.CalculateDistance(cxyz, pxyz);
-            if (!(dist < distance)) { continue; }
+
+            // Calculate distance to player
+            var portalXyz = new Vector3(value.X, value.Y, value.Z);
+            var dist = MathUtil.CalculateDistance(currentPosition, portalXyz);
+            if (dist >= distance)
+            {
+                continue;
+            }
             distance = dist;
             portal = value;
         }

@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using AAEmu.Game.Core.Managers;
+﻿using AAEmu.Game.Core.Managers;
 using AAEmu.Game.Core.Packets.G2C;
 using AAEmu.Game.Models.Game;
 using AAEmu.Game.Models.Game.Char;
@@ -11,7 +10,7 @@ namespace AAEmu.Game.Scripts.Commands;
 
 public class AddGold : ICommand
 {
-    public string[] CommandNames { get; set; } = new string[] { "gold", "addgold", "add_gold" };
+    public string[] CommandNames { get; set; } = ["gold", "addgold", "add_gold"];
 
     public void OnLoad()
     {
@@ -63,7 +62,7 @@ public class AddGold : ICommand
         {
             targetPlayer.Money += argTotal;
             targetPlayer.SendPacket(new SCItemTaskSuccessPacket(ItemTaskType.AutoLootDoodadItem,
-                new List<ItemTask> { new MoneyChange(argTotal) }, new List<ulong>()));
+                [new MoneyChange(argTotal)], []));
             if (character.Id != targetPlayer.Id)
             {
                 CommandManager.SendNormalText(this, messageOutput,

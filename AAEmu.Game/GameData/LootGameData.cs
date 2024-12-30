@@ -3,6 +3,7 @@ using AAEmu.Commons.Utils;
 using AAEmu.Game.GameData.Framework;
 using AAEmu.Game.Models.Game.Items.Loots;
 using AAEmu.Game.Utils.DB;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.Data.Sqlite;
 
 namespace AAEmu.Game.GameData;
@@ -25,15 +26,15 @@ public class LootGameData : Singleton<LootGameData>, IGameDataLoader
 
     public void Load(SqliteConnection connection)
     {
-        _lootPacks = new Dictionary<uint, LootPack>();
+        _lootPacks = [];
 
-        _loots = new Dictionary<uint, Loot>();
-        _lootGroups = new Dictionary<uint, LootGroups>();
-        _lootActabilityGroups = new Dictionary<uint, LootActabilityGroups>();
+        _loots = [];
+        _lootGroups = [];
+        _lootActabilityGroups = [];
 
-        _lootsByPackId = new Dictionary<uint, List<Loot>>();
-        _lootGroupsByPackId = new Dictionary<uint, List<LootGroups>>();
-        _lootActabilityGroupsByPackId = new Dictionary<uint, List<LootActabilityGroups>>();
+        _lootsByPackId = [];
+        _lootGroupsByPackId = [];
+        _lootActabilityGroupsByPackId = [];
 
         // table 'loots'
         using (var command = connection.CreateCommand())
@@ -61,7 +62,7 @@ public class LootGameData : Singleton<LootGameData>, IGameDataLoader
                     _loots.Add(template.Id, template);
 
                     if (!_lootsByPackId.ContainsKey(template.LootPackId))
-                        _lootsByPackId.Add(template.LootPackId, new List<Loot>());
+                        _lootsByPackId.Add(template.LootPackId, []);
 
                     _lootsByPackId[template.LootPackId].Add(template);
                 }
@@ -90,7 +91,7 @@ public class LootGameData : Singleton<LootGameData>, IGameDataLoader
                     _lootGroups.Add(template.Id, template);
 
                     if (!_lootGroupsByPackId.ContainsKey(template.PackId))
-                        _lootGroupsByPackId.Add(template.PackId, new List<LootGroups>());
+                        _lootGroupsByPackId.Add(template.PackId, []);
 
                     _lootGroupsByPackId[template.PackId].Add(template);
                 }
@@ -119,7 +120,7 @@ public class LootGameData : Singleton<LootGameData>, IGameDataLoader
                     _lootActabilityGroups.Add(template.Id, template);
 
                     if (!_lootActabilityGroupsByPackId.ContainsKey(template.LootPackId))
-                        _lootActabilityGroupsByPackId.Add(template.LootPackId, new List<LootActabilityGroups>());
+                        _lootActabilityGroupsByPackId.Add(template.LootPackId, []);
 
                     _lootActabilityGroupsByPackId[template.LootPackId].Add(template);
                 }
@@ -128,30 +129,36 @@ public class LootGameData : Singleton<LootGameData>, IGameDataLoader
 
         // Generate packs
 
-        foreach (var lootPackId in _lootsByPackId.Keys)
+        foreach (var (lootPackId, loots) in _lootsByPackId)
         {
             var pack = new LootPack()
             {
                 Id = lootPackId,
-                Loots = _lootsByPackId[lootPackId],
-                Groups = new Dictionary<uint, LootGroups>(),
-                ActabilityGroups = new Dictionary<uint, LootActabilityGroups>(),
-                LootsByGroupNo = new Dictionary<uint, List<Loot>>(),
+                Loots = loots,
+                Groups = [],
+                ActabilityGroups = [],
+                LootsByGroupNo = [],
                 GroupCount = 0
             };
 
+            // Get actual DB data for groups
             if (_lootGroupsByPackId.TryGetValue(lootPackId, out var lootGroupsList))
+            {
                 foreach (var lootGroup in lootGroupsList)
                     pack.Groups.Add(lootGroup.GroupNo, lootGroup);
+            }
 
+            // Skill related rolls
             if (_lootActabilityGroupsByPackId.TryGetValue(lootPackId, out var lootActAbilityGroups))
+            {
                 foreach (var lag in lootActAbilityGroups)
                     pack.ActabilityGroups.Add(lag.GroupId, lag);
+            }
 
-            foreach (var loot in _lootsByPackId[lootPackId])
+            foreach (var loot in loots)
             {
                 if (!pack.LootsByGroupNo.ContainsKey(loot.Group))
-                    pack.LootsByGroupNo.Add(loot.Group, new List<Loot>());
+                    pack.LootsByGroupNo.Add(loot.Group, []);
 
                 pack.LootsByGroupNo[loot.Group].Add(loot);
 

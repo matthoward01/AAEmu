@@ -6,8 +6,6 @@ using AAEmu.Game.Utils.DB;
 
 using Microsoft.Data.Sqlite;
 
-using NLog;
-
 namespace AAEmu.Game.GameData;
 
 [GameData]
@@ -20,9 +18,7 @@ public class TagsGameData : Singleton<TagsGameData>, IGameDataLoader
         Npcs,
         Skills
     }
-    private Logger Logger = LogManager.GetCurrentClassLogger();
     private Dictionary<TagType, Dictionary<uint, HashSet<uint>>> _tags;
-
 
     //Use different type if we need to ICollection/HashSet/Etc
     public IReadOnlySet<uint> GetIdsByTagId(TagType type, uint tagId)
@@ -40,7 +36,7 @@ public class TagsGameData : Singleton<TagsGameData>, IGameDataLoader
 
     public void Load(SqliteConnection connection)
     {
-        _tags = new Dictionary<TagType, Dictionary<uint, HashSet<uint>>>();
+        _tags = [];
         #region Tag Tables
         using (var command = connection.CreateCommand())
         {
@@ -57,7 +53,7 @@ public class TagsGameData : Singleton<TagsGameData>, IGameDataLoader
                     var buffId = reader.GetUInt32("buff_id");
 
                     if (!taggedBuffsDict.ContainsKey(tagId))
-                        taggedBuffsDict.Add(tagId, new HashSet<uint>());
+                        taggedBuffsDict.Add(tagId, []);
 
                     taggedBuffsDict[tagId].Add(buffId);
                 }
@@ -78,7 +74,7 @@ public class TagsGameData : Singleton<TagsGameData>, IGameDataLoader
                     var itemId = reader.GetUInt32("item_id");
 
                     if (!taggedItemsDict.ContainsKey(tagId))
-                        taggedItemsDict.Add(tagId, new HashSet<uint>());
+                        taggedItemsDict.Add(tagId, []);
 
                     taggedItemsDict[tagId].Add(itemId);
                 }
@@ -99,7 +95,7 @@ public class TagsGameData : Singleton<TagsGameData>, IGameDataLoader
                     var npcId = reader.GetUInt32("npc_id");
 
                     if (!taggedNpcsDict.ContainsKey(tagId))
-                        taggedNpcsDict.Add(tagId, new HashSet<uint>());
+                        taggedNpcsDict.Add(tagId, []);
 
                     taggedNpcsDict[tagId].Add(npcId);
                 }
@@ -120,7 +116,7 @@ public class TagsGameData : Singleton<TagsGameData>, IGameDataLoader
                     var skillId = reader.GetUInt32("skill_id");
 
                     if (!taggedSkillsDict.ContainsKey(tagId))
-                        taggedSkillsDict.Add(tagId, new HashSet<uint>());
+                        taggedSkillsDict.Add(tagId, []);
 
                     taggedSkillsDict[tagId].Add(skillId);
                 }

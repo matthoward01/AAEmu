@@ -2,7 +2,6 @@
 using AAEmu.Game.Core.Managers.UnitManagers;
 using AAEmu.Game.Core.Network.Game;
 
-
 namespace AAEmu.Game.Core.Packets.C2G;
 
 public class CSRollDicePacket : GamePacket
@@ -16,6 +15,5 @@ public class CSRollDicePacket : GamePacket
 
         var max = stream.ReadUInt32();
         CharacterManager.PlayerRoll(Connection.ActiveChar, int.Parse(max.ToString()));
-
     }
 }

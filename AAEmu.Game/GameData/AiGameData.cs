@@ -12,6 +12,8 @@ using Microsoft.Data.Sqlite;
 
 using NLog;
 
+#pragma warning disable IDE0079 // Remove unnecessary suppression
+
 namespace AAEmu.Game.GameData;
 
 [GameData]
@@ -39,9 +41,9 @@ public class AiGameData : Singleton<AiGameData>, IGameDataLoader
 
     public void Load(SqliteConnection connection)
     {
-        _aiParams = new Dictionary<uint, AiParams>();
-        _aiCommands = new Dictionary<uint, List<AiCommands>>();
-        _aiCommandSets = new Dictionary<uint, AiCommandSets>();
+        _aiParams = [];
+        _aiCommands = [];
+        _aiCommandSets = [];
 
         var fileTypeToId = new Dictionary<uint, AiParamType>();
 
@@ -118,7 +120,7 @@ public class AiGameData : Singleton<AiGameData>, IGameDataLoader
 
                     if (!_aiCommands.TryGetValue(template.CmdSetId, out var value))
                     {
-                        value = new List<AiCommands>();
+                        value = [];
                         _aiCommands.Add(template.CmdSetId, value);
                     }
 

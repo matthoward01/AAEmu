@@ -88,10 +88,12 @@ public partial class Npc : Unit
         }
     }
 
-    public bool CanFly { get; set; } // TODO mark Npc's that can fly so that they don't land on the ground when calculating the Z height
-    //Tagging works differently to Aggro.:
-    public Tagging CharacterTagging { get; set; }
+    public bool CanFly { get; set; } // TODO: mark NPCs that can fly so that they don't land on the ground when calculating the Z height
 
+    /// <summary>
+    /// Tagging works differently to Aggro and has its own system 
+    /// </summary>
+    public Tagging CharacterTagging { get; set; }
 
     public override float BaseMoveSpeed
     {
@@ -136,10 +138,7 @@ public partial class Npc : Unit
 
             if (IsUnderWater)
             {
-                if (value == GameStanceType.Combat)
-                    _currentGameStance = GameStanceType.CoSwim;
-                else
-                    _currentGameStance = GameStanceType.Swim;
+                _currentGameStance = value == GameStanceType.Combat ? GameStanceType.CoSwim : GameStanceType.Swim;
                 return;
             }
 
@@ -155,14 +154,16 @@ public partial class Npc : Unit
         get
         {
             var formula = FormulaManager.Instance.GetUnitFormula(FormulaOwnerType.Npc, UnitFormulaKind.Str);
-            var parameters = new Dictionary<string, double>();
-            parameters["level"] = Level;
-            parameters["npc_template"] =
-                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcTemplate, (byte)Template.NpcTemplateId);
-            parameters["npc_kind"] =
-                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcKind, (byte)Template.NpcKindId);
-            parameters["npc_grade"] =
-                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcGrade, (byte)Template.NpcGradeId);
+            var parameters = new Dictionary<string, double>
+            {
+                ["level"] = Level,
+                ["npc_template"] =
+                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcTemplate, (byte)Template.NpcTemplateId),
+                ["npc_kind"] =
+                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcKind, (byte)Template.NpcKindId),
+                ["npc_grade"] =
+                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcGrade, (byte)Template.NpcGradeId)
+            };
             var res = (int)formula.Evaluate(parameters);
             foreach (var bonus in GetBonuses(UnitAttribute.Str))
             {
@@ -182,14 +183,16 @@ public partial class Npc : Unit
         get
         {
             var formula = FormulaManager.Instance.GetUnitFormula(FormulaOwnerType.Npc, UnitFormulaKind.Dex);
-            var parameters = new Dictionary<string, double>();
-            parameters["level"] = Level;
-            parameters["npc_template"] =
-                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcTemplate, (byte)Template.NpcTemplateId);
-            parameters["npc_kind"] =
-                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcKind, (byte)Template.NpcKindId);
-            parameters["npc_grade"] =
-                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcGrade, (byte)Template.NpcGradeId);
+            var parameters = new Dictionary<string, double>
+            {
+                ["level"] = Level,
+                ["npc_template"] =
+                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcTemplate, (byte)Template.NpcTemplateId),
+                ["npc_kind"] =
+                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcKind, (byte)Template.NpcKindId),
+                ["npc_grade"] =
+                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcGrade, (byte)Template.NpcGradeId)
+            };
             var res = (int)formula.Evaluate(parameters);
             foreach (var bonus in GetBonuses(UnitAttribute.Dex))
             {
@@ -208,14 +211,16 @@ public partial class Npc : Unit
         get
         {
             var formula = FormulaManager.Instance.GetUnitFormula(FormulaOwnerType.Npc, UnitFormulaKind.Sta);
-            var parameters = new Dictionary<string, double>();
-            parameters["level"] = Level;
-            parameters["npc_template"] =
-                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcTemplate, (byte)Template.NpcTemplateId);
-            parameters["npc_kind"] =
-                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcKind, (byte)Template.NpcKindId);
-            parameters["npc_grade"] =
-                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcGrade, (byte)Template.NpcGradeId);
+            var parameters = new Dictionary<string, double>
+            {
+                ["level"] = Level,
+                ["npc_template"] =
+                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcTemplate, (byte)Template.NpcTemplateId),
+                ["npc_kind"] =
+                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcKind, (byte)Template.NpcKindId),
+                ["npc_grade"] =
+                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcGrade, (byte)Template.NpcGradeId)
+            };
             var res = (int)formula.Evaluate(parameters);
             foreach (var bonus in GetBonuses(UnitAttribute.Sta))
             {
@@ -234,14 +239,16 @@ public partial class Npc : Unit
         get
         {
             var formula = FormulaManager.Instance.GetUnitFormula(FormulaOwnerType.Npc, UnitFormulaKind.Int);
-            var parameters = new Dictionary<string, double>();
-            parameters["level"] = Level;
-            parameters["npc_template"] =
-                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcTemplate, (byte)Template.NpcTemplateId);
-            parameters["npc_kind"] =
-                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcKind, (byte)Template.NpcKindId);
-            parameters["npc_grade"] =
-                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcGrade, (byte)Template.NpcGradeId);
+            var parameters = new Dictionary<string, double>
+            {
+                ["level"] = Level,
+                ["npc_template"] =
+                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcTemplate, (byte)Template.NpcTemplateId),
+                ["npc_kind"] =
+                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcKind, (byte)Template.NpcKindId),
+                ["npc_grade"] =
+                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcGrade, (byte)Template.NpcGradeId)
+            };
             var res = (int)formula.Evaluate(parameters);
             foreach (var bonus in GetBonuses(UnitAttribute.Int))
             {
@@ -260,14 +267,16 @@ public partial class Npc : Unit
         get
         {
             var formula = FormulaManager.Instance.GetUnitFormula(FormulaOwnerType.Npc, UnitFormulaKind.Spi);
-            var parameters = new Dictionary<string, double>();
-            parameters["level"] = Level;
-            parameters["npc_template"] =
-                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcTemplate, (byte)Template.NpcTemplateId);
-            parameters["npc_kind"] =
-                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcKind, (byte)Template.NpcKindId);
-            parameters["npc_grade"] =
-                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcGrade, (byte)Template.NpcGradeId);
+            var parameters = new Dictionary<string, double>
+            {
+                ["level"] = Level,
+                ["npc_template"] =
+                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcTemplate, (byte)Template.NpcTemplateId),
+                ["npc_kind"] =
+                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcKind, (byte)Template.NpcKindId),
+                ["npc_grade"] =
+                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcGrade, (byte)Template.NpcGradeId)
+            };
             var res = (int)formula.Evaluate(parameters);
             foreach (var bonus in GetBonuses(UnitAttribute.Spi))
             {
@@ -286,14 +295,16 @@ public partial class Npc : Unit
         get
         {
             var formula = FormulaManager.Instance.GetUnitFormula(FormulaOwnerType.Npc, UnitFormulaKind.Fai);
-            var parameters = new Dictionary<string, double>();
-            parameters["level"] = Level;
-            parameters["npc_template"] =
-                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcTemplate, (byte)Template.NpcTemplateId);
-            parameters["npc_kind"] =
-                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcKind, (byte)Template.NpcKindId);
-            parameters["npc_grade"] =
-                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcGrade, (byte)Template.NpcGradeId);
+            var parameters = new Dictionary<string, double>
+            {
+                ["level"] = Level,
+                ["npc_template"] =
+                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcTemplate, (byte)Template.NpcTemplateId),
+                ["npc_kind"] =
+                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcKind, (byte)Template.NpcKindId),
+                ["npc_grade"] =
+                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcGrade, (byte)Template.NpcGradeId)
+            };
             var res = (int)formula.Evaluate(parameters);
             foreach (var bonus in GetBonuses(UnitAttribute.Fai))
             {
@@ -312,20 +323,22 @@ public partial class Npc : Unit
         get
         {
             var formula = FormulaManager.Instance.GetUnitFormula(FormulaOwnerType.Npc, UnitFormulaKind.MaxHealth);
-            var parameters = new Dictionary<string, double>();
-            parameters["level"] = Level;
-            parameters["str"] = Str;
-            parameters["dex"] = Dex;
-            parameters["sta"] = Sta;
-            parameters["int"] = Int;
-            parameters["spi"] = Spi;
-            parameters["fai"] = Fai;
-            parameters["npc_template"] =
-                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcTemplate, (byte)Template.NpcTemplateId);
-            parameters["npc_kind"] =
-                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcKind, (byte)Template.NpcKindId);
-            parameters["npc_grade"] =
-                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcGrade, (byte)Template.NpcGradeId);
+            var parameters = new Dictionary<string, double>
+            {
+                ["level"] = Level,
+                ["str"] = Str,
+                ["dex"] = Dex,
+                ["sta"] = Sta,
+                ["int"] = Int,
+                ["spi"] = Spi,
+                ["fai"] = Fai,
+                ["npc_template"] =
+                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcTemplate, (byte)Template.NpcTemplateId),
+                ["npc_kind"] =
+                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcKind, (byte)Template.NpcKindId),
+                ["npc_grade"] =
+                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcGrade, (byte)Template.NpcGradeId)
+            };
             var res = (int)formula.Evaluate(parameters);
             foreach (var bonus in GetBonuses(UnitAttribute.MaxHealth))
             {
@@ -344,20 +357,22 @@ public partial class Npc : Unit
         get
         {
             var formula = FormulaManager.Instance.GetUnitFormula(FormulaOwnerType.Npc, UnitFormulaKind.HealthRegen);
-            var parameters = new Dictionary<string, double>();
-            parameters["level"] = Level;
-            parameters["str"] = Str;
-            parameters["dex"] = Dex;
-            parameters["sta"] = Sta;
-            parameters["int"] = Int;
-            parameters["spi"] = Spi;
-            parameters["fai"] = Fai;
-            parameters["npc_template"] =
-                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcTemplate, (byte)Template.NpcTemplateId);
-            parameters["npc_kind"] =
-                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcKind, (byte)Template.NpcKindId);
-            parameters["npc_grade"] =
-                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcGrade, (byte)Template.NpcGradeId);
+            var parameters = new Dictionary<string, double>
+            {
+                ["level"] = Level,
+                ["str"] = Str,
+                ["dex"] = Dex,
+                ["sta"] = Sta,
+                ["int"] = Int,
+                ["spi"] = Spi,
+                ["fai"] = Fai,
+                ["npc_template"] =
+                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcTemplate, (byte)Template.NpcTemplateId),
+                ["npc_kind"] =
+                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcKind, (byte)Template.NpcKindId),
+                ["npc_grade"] =
+                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcGrade, (byte)Template.NpcGradeId)
+            };
             var res = (int)formula.Evaluate(parameters);
             res += Spi / 10;
             foreach (var bonus in GetBonuses(UnitAttribute.HealthRegen))
@@ -378,20 +393,22 @@ public partial class Npc : Unit
         {
             var formula =
                 FormulaManager.Instance.GetUnitFormula(FormulaOwnerType.Npc, UnitFormulaKind.PersistentHealthRegen);
-            var parameters = new Dictionary<string, double>();
-            parameters["level"] = Level;
-            parameters["str"] = Str;
-            parameters["dex"] = Dex;
-            parameters["sta"] = Sta;
-            parameters["int"] = Int;
-            parameters["spi"] = Spi;
-            parameters["fai"] = Fai;
-            parameters["npc_template"] =
-                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcTemplate, (byte)Template.NpcTemplateId);
-            parameters["npc_kind"] =
-                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcKind, (byte)Template.NpcKindId);
-            parameters["npc_grade"] =
-                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcGrade, (byte)Template.NpcGradeId);
+            var parameters = new Dictionary<string, double>
+            {
+                ["level"] = Level,
+                ["str"] = Str,
+                ["dex"] = Dex,
+                ["sta"] = Sta,
+                ["int"] = Int,
+                ["spi"] = Spi,
+                ["fai"] = Fai,
+                ["npc_template"] =
+                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcTemplate, (byte)Template.NpcTemplateId),
+                ["npc_kind"] =
+                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcKind, (byte)Template.NpcKindId),
+                ["npc_grade"] =
+                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcGrade, (byte)Template.NpcGradeId)
+            };
             var res = (int)formula.Evaluate(parameters);
             foreach (var bonus in GetBonuses(UnitAttribute.PersistentHealthRegen))
             {
@@ -410,20 +427,22 @@ public partial class Npc : Unit
         get
         {
             var formula = FormulaManager.Instance.GetUnitFormula(FormulaOwnerType.Npc, UnitFormulaKind.MaxMana);
-            var parameters = new Dictionary<string, double>();
-            parameters["level"] = Level;
-            parameters["str"] = Str;
-            parameters["dex"] = Dex;
-            parameters["sta"] = Sta;
-            parameters["int"] = Int;
-            parameters["spi"] = Spi;
-            parameters["fai"] = Fai;
-            parameters["npc_template"] =
-                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcTemplate, (byte)Template.NpcTemplateId);
-            parameters["npc_kind"] =
-                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcKind, (byte)Template.NpcKindId);
-            parameters["npc_grade"] =
-                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcGrade, (byte)Template.NpcGradeId);
+            var parameters = new Dictionary<string, double>
+            {
+                ["level"] = Level,
+                ["str"] = Str,
+                ["dex"] = Dex,
+                ["sta"] = Sta,
+                ["int"] = Int,
+                ["spi"] = Spi,
+                ["fai"] = Fai,
+                ["npc_template"] =
+                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcTemplate, (byte)Template.NpcTemplateId),
+                ["npc_kind"] =
+                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcKind, (byte)Template.NpcKindId),
+                ["npc_grade"] =
+                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcGrade, (byte)Template.NpcGradeId)
+            };
             var res = (int)formula.Evaluate(parameters);
             foreach (var bonus in GetBonuses(UnitAttribute.MaxMana))
             {
@@ -442,20 +461,22 @@ public partial class Npc : Unit
         get
         {
             var formula = FormulaManager.Instance.GetUnitFormula(FormulaOwnerType.Npc, UnitFormulaKind.ManaRegen);
-            var parameters = new Dictionary<string, double>();
-            parameters["level"] = Level;
-            parameters["str"] = Str;
-            parameters["dex"] = Dex;
-            parameters["sta"] = Sta;
-            parameters["int"] = Int;
-            parameters["spi"] = Spi;
-            parameters["fai"] = Fai;
-            parameters["npc_template"] =
-                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcTemplate, (byte)Template.NpcTemplateId);
-            parameters["npc_kind"] =
-                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcKind, (byte)Template.NpcKindId);
-            parameters["npc_grade"] =
-                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcGrade, (byte)Template.NpcGradeId);
+            var parameters = new Dictionary<string, double>
+            {
+                ["level"] = Level,
+                ["str"] = Str,
+                ["dex"] = Dex,
+                ["sta"] = Sta,
+                ["int"] = Int,
+                ["spi"] = Spi,
+                ["fai"] = Fai,
+                ["npc_template"] =
+                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcTemplate, (byte)Template.NpcTemplateId),
+                ["npc_kind"] =
+                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcKind, (byte)Template.NpcKindId),
+                ["npc_grade"] =
+                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcGrade, (byte)Template.NpcGradeId)
+            };
             var res = (int)formula.Evaluate(parameters);
             res += Spi / 10;
             foreach (var bonus in GetBonuses(UnitAttribute.ManaRegen))
@@ -476,20 +497,22 @@ public partial class Npc : Unit
         {
             var formula =
                 FormulaManager.Instance.GetUnitFormula(FormulaOwnerType.Npc, UnitFormulaKind.PersistentManaRegen);
-            var parameters = new Dictionary<string, double>();
-            parameters["level"] = Level;
-            parameters["str"] = Str;
-            parameters["dex"] = Dex;
-            parameters["sta"] = Sta;
-            parameters["int"] = Int;
-            parameters["spi"] = Spi;
-            parameters["fai"] = Fai;
-            parameters["npc_template"] =
-                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcTemplate, (byte)Template.NpcTemplateId);
-            parameters["npc_kind"] =
-                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcKind, (byte)Template.NpcKindId);
-            parameters["npc_grade"] =
-                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcGrade, (byte)Template.NpcGradeId);
+            var parameters = new Dictionary<string, double>
+            {
+                ["level"] = Level,
+                ["str"] = Str,
+                ["dex"] = Dex,
+                ["sta"] = Sta,
+                ["int"] = Int,
+                ["spi"] = Spi,
+                ["fai"] = Fai,
+                ["npc_template"] =
+                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcTemplate, (byte)Template.NpcTemplateId),
+                ["npc_kind"] =
+                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcKind, (byte)Template.NpcKindId),
+                ["npc_grade"] =
+                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcGrade, (byte)Template.NpcGradeId)
+            };
             var res = (int)formula.Evaluate(parameters);
             foreach (var bonus in GetBonuses(UnitAttribute.PersistentManaRegen))
             {
@@ -508,21 +531,23 @@ public partial class Npc : Unit
         {
             var formula =
                 FormulaManager.Instance.GetUnitFormula(FormulaOwnerType.Npc, UnitFormulaKind.LevelDps);
-            var parameters = new Dictionary<string, double>();
-            parameters["level"] = Level;
-            parameters["str"] = Str;
-            parameters["dex"] = Dex;
-            parameters["sta"] = Sta;
-            parameters["int"] = Int;
-            parameters["spi"] = Spi;
-            parameters["fai"] = Fai;
-            parameters["ab_level"] = 0;
-            parameters["npc_template"] =
-                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcTemplate, (byte)Template.NpcTemplateId);
-            parameters["npc_kind"] =
-                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcKind, (byte)Template.NpcKindId);
-            parameters["npc_grade"] =
-                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcGrade, (byte)Template.NpcGradeId);
+            var parameters = new Dictionary<string, double>
+            {
+                ["level"] = Level,
+                ["str"] = Str,
+                ["dex"] = Dex,
+                ["sta"] = Sta,
+                ["int"] = Int,
+                ["spi"] = Spi,
+                ["fai"] = Fai,
+                ["ab_level"] = 0,
+                ["npc_template"] =
+                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcTemplate, (byte)Template.NpcTemplateId),
+                ["npc_kind"] =
+                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcKind, (byte)Template.NpcKindId),
+                ["npc_grade"] =
+                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcGrade, (byte)Template.NpcGradeId)
+            };
             var res = formula.Evaluate(parameters);
             return (float)res;
         }
@@ -555,20 +580,22 @@ public partial class Npc : Unit
         {
             var formula =
                 FormulaManager.Instance.GetUnitFormula(FormulaOwnerType.Npc, UnitFormulaKind.MeleeDpsInc);
-            var parameters = new Dictionary<string, double>();
-            parameters["level"] = Level;
-            parameters["str"] = Str;
-            parameters["dex"] = Dex;
-            parameters["sta"] = Sta;
-            parameters["int"] = Int;
-            parameters["spi"] = Spi;
-            parameters["fai"] = Fai;
-            parameters["npc_template"] =
-                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcTemplate, (byte)Template.NpcTemplateId);
-            parameters["npc_kind"] =
-                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcKind, (byte)Template.NpcKindId);
-            parameters["npc_grade"] =
-                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcGrade, (byte)Template.NpcGradeId);
+            var parameters = new Dictionary<string, double>
+            {
+                ["level"] = Level,
+                ["str"] = Str,
+                ["dex"] = Dex,
+                ["sta"] = Sta,
+                ["int"] = Int,
+                ["spi"] = Spi,
+                ["fai"] = Fai,
+                ["npc_template"] =
+                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcTemplate, (byte)Template.NpcTemplateId),
+                ["npc_kind"] =
+                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcKind, (byte)Template.NpcKindId),
+                ["npc_grade"] =
+                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcGrade, (byte)Template.NpcGradeId)
+            };
             var res = formula.Evaluate(parameters);
             foreach (var bonus in GetBonuses(UnitAttribute.MeleeDpsInc))
             {
@@ -629,20 +656,22 @@ public partial class Npc : Unit
         {
             var formula =
                 FormulaManager.Instance.GetUnitFormula(FormulaOwnerType.Npc, UnitFormulaKind.RangedDpsInc);
-            var parameters = new Dictionary<string, double>();
-            parameters["level"] = Level;
-            parameters["str"] = Str;
-            parameters["dex"] = Dex;
-            parameters["sta"] = Sta;
-            parameters["int"] = Int;
-            parameters["spi"] = Spi;
-            parameters["fai"] = Fai;
-            parameters["npc_template"] =
-                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcTemplate, (byte)Template.NpcTemplateId);
-            parameters["npc_kind"] =
-                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcKind, (byte)Template.NpcKindId);
-            parameters["npc_grade"] =
-                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcGrade, (byte)Template.NpcGradeId);
+            var parameters = new Dictionary<string, double>
+            {
+                ["level"] = Level,
+                ["str"] = Str,
+                ["dex"] = Dex,
+                ["sta"] = Sta,
+                ["int"] = Int,
+                ["spi"] = Spi,
+                ["fai"] = Fai,
+                ["npc_template"] =
+                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcTemplate, (byte)Template.NpcTemplateId),
+                ["npc_kind"] =
+                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcKind, (byte)Template.NpcKindId),
+                ["npc_grade"] =
+                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcGrade, (byte)Template.NpcGradeId)
+            };
             var res = formula.Evaluate(parameters);
             foreach (var bonus in GetBonuses(UnitAttribute.RangedDpsInc))
             {
@@ -683,20 +712,22 @@ public partial class Npc : Unit
         {
             var formula =
                 FormulaManager.Instance.GetUnitFormula(FormulaOwnerType.Npc, UnitFormulaKind.SpellDpsInc);
-            var parameters = new Dictionary<string, double>();
-            parameters["level"] = Level;
-            parameters["str"] = Str;
-            parameters["dex"] = Dex;
-            parameters["sta"] = Sta;
-            parameters["int"] = Int;
-            parameters["spi"] = Spi;
-            parameters["fai"] = Fai;
-            parameters["npc_template"] =
-                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcTemplate, (byte)Template.NpcTemplateId);
-            parameters["npc_kind"] =
-                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcKind, (byte)Template.NpcKindId);
-            parameters["npc_grade"] =
-                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcGrade, (byte)Template.NpcGradeId);
+            var parameters = new Dictionary<string, double>
+            {
+                ["level"] = Level,
+                ["str"] = Str,
+                ["dex"] = Dex,
+                ["sta"] = Sta,
+                ["int"] = Int,
+                ["spi"] = Spi,
+                ["fai"] = Fai,
+                ["npc_template"] =
+                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcTemplate, (byte)Template.NpcTemplateId),
+                ["npc_kind"] =
+                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcKind, (byte)Template.NpcKindId),
+                ["npc_grade"] =
+                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcGrade, (byte)Template.NpcGradeId)
+            };
             var res = formula.Evaluate(parameters);
             foreach (var bonus in GetBonuses(UnitAttribute.SpellDpsInc))
             {
@@ -716,20 +747,22 @@ public partial class Npc : Unit
         get
         {
             var formula = FormulaManager.Instance.GetUnitFormula(FormulaOwnerType.Npc, UnitFormulaKind.Armor);
-            var parameters = new Dictionary<string, double>();
-            parameters["level"] = Level;
-            parameters["str"] = Str;
-            parameters["dex"] = Dex;
-            parameters["sta"] = Sta;
-            parameters["int"] = Int;
-            parameters["spi"] = Spi;
-            parameters["fai"] = Fai;
-            parameters["npc_template"] =
-                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcTemplate, (byte)Template.NpcTemplateId);
-            parameters["npc_kind"] =
-                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcKind, (byte)Template.NpcKindId);
-            parameters["npc_grade"] =
-                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcGrade, (byte)Template.NpcGradeId);
+            var parameters = new Dictionary<string, double>
+            {
+                ["level"] = Level,
+                ["str"] = Str,
+                ["dex"] = Dex,
+                ["sta"] = Sta,
+                ["int"] = Int,
+                ["spi"] = Spi,
+                ["fai"] = Fai,
+                ["npc_template"] =
+                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcTemplate, (byte)Template.NpcTemplateId),
+                ["npc_kind"] =
+                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcKind, (byte)Template.NpcKindId),
+                ["npc_grade"] =
+                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcGrade, (byte)Template.NpcGradeId)
+            };
             var res = (int)formula.Evaluate(parameters);
             foreach (var bonus in GetBonuses(UnitAttribute.Armor))
             {
@@ -748,20 +781,22 @@ public partial class Npc : Unit
         get
         {
             var formula = FormulaManager.Instance.GetUnitFormula(FormulaOwnerType.Npc, UnitFormulaKind.MagicResist);
-            var parameters = new Dictionary<string, double>();
-            parameters["level"] = Level;
-            parameters["str"] = Str;
-            parameters["dex"] = Dex;
-            parameters["sta"] = Sta;
-            parameters["int"] = Int;
-            parameters["spi"] = Spi;
-            parameters["fai"] = Fai;
-            parameters["npc_template"] =
-                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcTemplate, (byte)Template.NpcTemplateId);
-            parameters["npc_kind"] =
-                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcKind, (byte)Template.NpcKindId);
-            parameters["npc_grade"] =
-                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcGrade, (byte)Template.NpcGradeId);
+            var parameters = new Dictionary<string, double>
+            {
+                ["level"] = Level,
+                ["str"] = Str,
+                ["dex"] = Dex,
+                ["sta"] = Sta,
+                ["int"] = Int,
+                ["spi"] = Spi,
+                ["fai"] = Fai,
+                ["npc_template"] =
+                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcTemplate, (byte)Template.NpcTemplateId),
+                ["npc_kind"] =
+                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcKind, (byte)Template.NpcKindId),
+                ["npc_grade"] =
+                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcGrade, (byte)Template.NpcGradeId)
+            };
             var res = (int)formula.Evaluate(parameters);
             foreach (var bonus in GetBonuses(UnitAttribute.MagicResist))
             {
@@ -781,20 +816,22 @@ public partial class Npc : Unit
             if (Template.NoExp)
                 return 0;
             var formula = FormulaManager.Instance.GetUnitFormula(FormulaOwnerType.Npc, UnitFormulaKind.KillExp);
-            var parameters = new Dictionary<string, double>();
-            parameters["level"] = Level;
-            parameters["str"] = Str;
-            parameters["dex"] = Dex;
-            parameters["sta"] = Sta;
-            parameters["int"] = Int;
-            parameters["spi"] = Spi;
-            parameters["fai"] = Fai;
-            parameters["npc_template"] =
-                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcTemplate, (byte)Template.NpcTemplateId);
-            parameters["npc_kind"] =
-                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcKind, (byte)Template.NpcKindId);
-            parameters["npc_grade"] =
-                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcGrade, (byte)Template.NpcGradeId);
+            var parameters = new Dictionary<string, double>
+            {
+                ["level"] = Level,
+                ["str"] = Str,
+                ["dex"] = Dex,
+                ["sta"] = Sta,
+                ["int"] = Int,
+                ["spi"] = Spi,
+                ["fai"] = Fai,
+                ["npc_template"] =
+                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcTemplate, (byte)Template.NpcTemplateId),
+                ["npc_kind"] =
+                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcKind, (byte)Template.NpcKindId),
+                ["npc_grade"] =
+                FormulaManager.Instance.GetUnitVariable(formula.Id, UnitFormulaVariableType.NpcGrade, (byte)Template.NpcGradeId)
+            };
             var res = formula.Evaluate(parameters);
             res *= Template.ExpMultiplier;
             res += Template.ExpAdder;
@@ -817,23 +854,18 @@ public partial class Npc : Unit
         var eligiblePlayers = new HashSet<Character>();
         if (CharacterTagging.TagTeam != 0)
         {
-            //A team has tagging rights
+            // A team has tagging rights
             var team = TeamManager.Instance.GetActiveTeam(CharacterTagging.TagTeam);
             if (team != null)
             {
-
-                //Just to check the team is still a valid team.
+                // Just to check the team is still a valid team.
                 foreach (var member in team.Members)
                 {
-                    if (member != null && member.Character != null)
+                    if (member?.Character != null)
                     {
-                        if (member.Character is Character tm)
+                        if (member.Character.GetDistanceTo(this, true) <= Items.Containers.LootingContainer.MaxLootingRange)
                         {
-                            var distance = tm.Transform.World.Position - this.Transform.World.Position;
-                            if (distance.Length() <= 200)
-                            {
-                                eligiblePlayers.Add(tm);
-                            }
+                            eligiblePlayers.Add(member.Character);
                         }
                     }
                 }
@@ -854,7 +886,7 @@ public partial class Npc : Unit
 
         if (eligiblePlayers.Count == 0 && killer is Character characterKiller)
         {
-            QuestManager.Instance.DoOnMonsterHuntEvents(characterKiller, this);//No eligible owner, but the killer is a character.
+            QuestManager.Instance.DoOnMonsterHuntEvents(characterKiller, this); // No eligible owner, but the killer is a character.
             characterKiller.AddExp(KillExp, true);
             var mate = MateManager.Instance.GetActiveMate(characterKiller.ObjId);
             if (mate != null)
@@ -869,14 +901,14 @@ public partial class Npc : Unit
             var isRaid = false;
             if (CharacterTagging.TagTeam != 0)
             {
-                //A team has tagging rights
+                // A team has tagging rights
                 var team = TeamManager.Instance.GetActiveTeam(CharacterTagging.TagTeam);
                 if (team != null)
                 {
                     if (!team.IsParty)
                     {
                         isRaid = true;
-                        //Team is a raid.
+                        // Team is a raid.
                     }
                     else if (team.MembersCount() > 3)
                     {
@@ -887,28 +919,27 @@ public partial class Npc : Unit
 
             foreach (var pl in eligiblePlayers)
             {
-                int plKillXP = 0;
-                int mateKillXP = 0;
-                float plMod = 1f;
-                float mateMod = 1f;
-
+                var plKillXP = 0;
+                var mateKillXP = 0;
+                var plMod = 1f;
+                var mateMod = 1f;
 
                 if (isRaid)
                 {
-                    //Player is in a raid. 1.2, pet XP is capped a full team value, but player gets raid XP regardless of how many raiders are present.
+                    // Player is in a raid. 1.2, pet XP is capped a full team value, but player gets raid XP regardless of how many raiders are present.
                     plMod = 0.33f;
                     mateMod = 0.66f;
                 }
                 else if (isFullTeam)
                 {
-                    //Player is in a team of more than 3 people. Player gets full party XP regardless of how many party members are present.
+                    // Player is in a team of more than 3 people. Player gets full party XP regardless of how many party members are present.
                     plMod = 0.66f;
                     mateMod = 0.66f;
                 }
 
                 else if (eligiblePlayers.Count > 1 && eligiblePlayers.Count <= 3)
                 {
-                    //If players are between 2 and 3, we scale. At this point, the party doesn't matter, just nearby players. 
+                    // If players are between 2 and 3, we scale. At this point, the party doesn't matter, just nearby players. 
                     if (eligiblePlayers.Count == 2)
                     {
                         plMod = 0.90f;
@@ -922,22 +953,21 @@ public partial class Npc : Unit
                 }
                 else
                 {
-                    //Player is solo, or at least only 1 player is close enough to get rights
+                    // Player is solo, or at least only 1 player is close enough to get rights
                     plMod = 1f;
                     mateMod = 1f;
                 }
 
-                //Now we need to scale XP based on level difference, which gets a bit more complex.
-
+                // Now we need to scale XP based on level difference, which gets a bit more complex.
 
                 if (pl.Level >= this.Level + 10 || pl.Level <= this.Level - 10)
                 {
-                    //No XP for you or your pet. Will check on the +10
+                    // No XP for you or your pet. Will check on the +10
                 }
                 else
                 {
-                    float LevDif = 1.0f;
-                    int levelDifference = pl.Level - this.Level;
+                    var LevDif = 1.0f;
+                    var levelDifference = pl.Level - this.Level;
 
                     if (levelDifference > 0)
                     {
@@ -962,12 +992,9 @@ public partial class Npc : Unit
                     }
                 }
 
-
-
-
-                //character.Quests.OnKill(this);
+                // character.Quests.OnKill(this);
                 // инициируем событие
-                //Task.Run(() => QuestManager.Instance.DoOnMonsterHuntEvents(character, this));
+                // Task.Run(() => QuestManager.Instance.DoOnMonsterHuntEvents(character, this));
                 QuestManager.Instance.DoOnMonsterHuntEvents(pl, this);
             }
         }
@@ -983,7 +1010,7 @@ public partial class Npc : Unit
 
     private void ClearAllAggroTargetsAndCheckCombatState()
     {
-        List<Character> playerAggroList = new();
+        List<Character> playerAggroList = [];
         // Generate a list of all player that we had aggro on
         foreach (var (objId, aggro) in AggroTable)
         {
@@ -1018,7 +1045,7 @@ public partial class Npc : Unit
     {
         base.RemoveVisibleObject(character);
 
-        character.SendPacket(new SCUnitsRemovedPacket(new[] { ObjId }));
+        character.SendPacket(new SCUnitsRemovedPacket([ObjId]));
     }
 
     public void AddUnitAggro(AggroKind kind, Unit unit, int amount)
@@ -1049,7 +1076,6 @@ public partial class Npc : Unit
         //Add Tagging if it was damage aggro
         if (kind == AggroKind.Damage)
             CharacterTagging.AddTagger(unit, amount);
-
 
         amount = (int)(amount * (unit.AggroMul / 100.0f));
         amount = (int)(amount * (IncomingAggroMul / 100.0f));
@@ -1128,7 +1154,6 @@ public partial class Npc : Unit
     }
 
     //Tagging!
-
 
     private static void CheckIfEmptyAggroToReturn(IBaseUnit unit)
     {

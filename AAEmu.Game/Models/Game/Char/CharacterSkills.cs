@@ -17,9 +17,9 @@ public class CharacterSkills(Character owner)
         Buff = 2
     }
 
-    private readonly List<uint> _removed = new();
-    public Dictionary<uint, Skill> Skills { get; } = new();
-    public Dictionary<uint, PassiveBuff> PassiveBuffs { get; } = new();
+    private readonly List<uint> _removed = [];
+    public Dictionary<uint, Skill> Skills { get; } = [];
+    public Dictionary<uint, PassiveBuff> PassiveBuffs { get; } = [];
     private Character Owner { get; } = owner;
 
     /// <summary>
@@ -182,7 +182,7 @@ public class CharacterSkills(Character owner)
             {
                 while (reader.Read())
                 {
-                    var type = (SkillType)Enum.Parse(typeof(SkillType), reader.GetString("type"), true);
+                    var type = Enum.Parse<SkillType>(reader.GetString("type"), true);
                     switch (type)
                     {
                         case SkillType.Skill:

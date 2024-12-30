@@ -7,6 +7,8 @@ using System.Security.Cryptography;
 using System.Text;
 using AAEmu.Commons.Exceptions;
 
+#pragma warning disable IDE0079 // Remove unnecessary suppression
+
 // Source: https://github.com/ZeromusXYZ/AAEmu-Packer
 
 namespace AAEmu.Commons.Utils.AAPak;
@@ -40,7 +42,7 @@ public class AAPakFileHeader
     /// Default AES128 key used by XLGames for ArcheAge as encryption key for header and fileinfo data
     /// 32 1F 2A EE AA 58 4A B4 9A 6C 9E 09 D5 9E 9C 6F
     /// </summary>
-    private readonly byte[] XLGamesKey = new byte[] { 0x32, 0x1F, 0x2A, 0xEE, 0xAA, 0x58, 0x4A, 0xB4, 0x9A, 0x6C, 0x9E, 0x09, 0xD5, 0x9E, 0x9C, 0x6F };
+    private readonly byte[] XLGamesKey = [0x32, 0x1F, 0x2A, 0xEE, 0xAA, 0x58, 0x4A, 0xB4, 0x9A, 0x6C, 0x9E, 0x09, 0xD5, 0x9E, 0x9C, 0x6F];
     /// <summary>
     /// Current encryption key
     /// </summary>
@@ -297,11 +299,12 @@ public class AAPakFileHeader
         using BinaryWriter writer = new BinaryWriter(ms);
 
         // Init File Counts
-        var totalFileCount = _owner.files.Count + _owner.extraFiles.Count;
-        var filesToGo = _owner.files.Count;
+        var totalFileCount = _owner.pakFiles.Count + _owner.extraFiles.Count;
+        var filesToGo = _owner.pakFiles.Count;
         var extrasToGo = _owner.extraFiles.Count;
         int fileIndex = 0;
         int extrasIndex = 0;
+        var files = _owner.pakFiles.Values.ToList();
         for (int i = 0; i < totalFileCount; i++)
         {
             ms.Position = 0;
@@ -314,7 +317,7 @@ public class AAPakFileHeader
                 if (filesToGo > 0)
                 {
                     filesToGo--;
-                    pfi = _owner.files[fileIndex];
+                    pfi = files[fileIndex];
                     fileIndex++;
                 }
                 else
@@ -345,7 +348,7 @@ public class AAPakFileHeader
                 if (filesToGo > 0)
                 {
                     filesToGo--;
-                    pfi = _owner.files[fileIndex];
+                    pfi = files[fileIndex];
                     fileIndex++;
                 }
                 else
@@ -447,7 +450,7 @@ public class AAPakFileHeader
             FAT.Position = FAT.Length;
         }
         // Update header info
-        fileCount = (uint)_owner.files.Count;
+        fileCount = (uint)_owner.pakFiles.Count;
         extraFileCount = (uint)_owner.extraFiles.Count;
         // Stretch size for header
         FAT.SetLength(FAT.Length + headerSize);
@@ -472,7 +475,7 @@ public class AAPakFileHeader
         using BinaryReader reader = new BinaryReader(ms);
 
         // Read the Files
-        _owner.files.Clear();
+        _owner.pakFiles.Clear();
         _owner.extraFiles.Clear();
         var totalFileCount = fileCount + extraFileCount;
         var filesToGo = fileCount;
@@ -583,7 +586,7 @@ public class AAPakFileHeader
                     pfi.entryIndexNumber = fileIndexCounter;
 
                     filesToGo--;
-                    _owner.files.Add(pfi);
+                    _owner.pakFiles.Add(pfi.name, pfi);
                 }
                 else
                 if (extraToGo > 0)
@@ -616,12 +619,12 @@ public class AAPakFileHeader
                     pfi.deletedIndexNumber = deletedIndexCounter;
 
                     filesToGo--;
-                    _owner.files.Add(pfi);
+                    _owner.pakFiles.Add(pfi.name, pfi);
                 }
             }
             else
             {
-                // Call the police, illegal Types are invading our safespace
+                // Call the police, illegal Types are invading our safe space
             }
 
             /*
@@ -642,7 +645,6 @@ public class AAPakFileHeader
 
         ms.Dispose();
     }
-
 
     /// <summary>
     /// Helper function for debugging, write byte array as a hex text file
@@ -692,7 +694,6 @@ public class AAPakFileHeader
 
         return s;
     }
-
 
     /// <summary>
     /// Decrypt the current header data to get the file counts
@@ -811,7 +812,7 @@ public class AAPak
     /// <summary>
     /// Virtual data to return as a null value for file details, can be used as to initialize a var to pass as a ref
     /// </summary>
-    public AAPakFileInfo nullAAPakFileInfo = new();
+    public static AAPakFileInfo nullAAPakFileInfo = new();
     public string _gpFilePath { get; private set; }
     public FileStream _gpFileStream { get; private set; }
     /// <summary>
@@ -833,15 +834,16 @@ public class AAPak
     /// <summary>
     /// List of all used files
     /// </summary>
-    public List<AAPakFileInfo> files = new();
+    // public List<AAPakFileInfo> files = [];
+    public Dictionary<string, AAPakFileInfo> pakFiles = [];
     /// <summary>
     /// List of all unused files, normally these are all named "__unused__"
     /// </summary>
-    public List<AAPakFileInfo> extraFiles = new();
+    public List<AAPakFileInfo> extraFiles = [];
     /// <summary>
     /// Virtual list of all folder names, use GenerateFolderList() to populate this list (might take a while)
     /// </summary>
-    public List<string> folders = new();
+    public List<string> folders = [];
     /// <summary>
     /// Show if this Pak file is opened in read-only mode
     /// </summary>
@@ -878,7 +880,7 @@ public class AAPak
                     isLoaded = OpenVirtualCSVPak(filePath);
                     return;
                 }
-                // We will only allow opening as a CVS file when it's set to readonly (and not a new file)
+                // We will only allow opening as a CVS file when it's set to read-only (and not a new file)
             }
             */
 
@@ -997,7 +999,6 @@ public class AAPak
         }
     }
 
-
     public bool OpenVirtualCSVPak(string csvfilePath)
     {
         // Fail if already open
@@ -1068,7 +1069,7 @@ public class AAPak
     /// <returns>Returns true if the read information makes a valid Pak file</returns>
     protected bool ReadHeader()
     {
-        files.Clear();
+        pakFiles.Clear();
         extraFiles.Clear();
         folders.Clear();
 
@@ -1155,7 +1156,7 @@ public class AAPak
 
     protected bool ReadCSVData()
     {
-        files.Clear();
+        pakFiles.Clear();
         extraFiles.Clear();
         folders.Clear();
 
@@ -1197,6 +1198,7 @@ public class AAPak
                 var fields = line.Split(';');
                 if (fields.Length == 10)
                 {
+
                     try
                     {
                         var fni = new AAPakFileInfo();
@@ -1214,7 +1216,7 @@ public class AAPak
                         fni.dummy2 = uint.Parse(fields[9]);
 
                         // TODO: check if this reads correctly
-                        files.Add(fni);
+                        pakFiles.Add(fni.name, fni);
                     }
                     catch
                     {
@@ -1228,9 +1230,8 @@ public class AAPak
         return _header.isValid;
     }
 
-
     /// <summary>
-    /// Populate the folders string list with virual folder names derived from the files found inside the pak
+    /// Populate the folders string list with virtual folder names derived from the files found inside the pak
     /// </summary>
     /// <param name="sortTheList">Set to false if you don't want the resulting folders list to be sorted (not recommended)</param>
     public void GenerateFolderList(bool sortTheList = true)
@@ -1238,7 +1239,7 @@ public class AAPak
         // There is no actual directory info stored in the pak file, so we just generate it based on filenames
         folders.Clear();
         if (!isOpen || !_header.isValid) return;
-        foreach (AAPakFileInfo pfi in files)
+        foreach (AAPakFileInfo pfi in pakFiles.Values)
         {
             if (pfi.name == string.Empty)
                 continue;
@@ -1262,13 +1263,13 @@ public class AAPak
     /// <summary>
     /// Get a list of files inside a given "directory".
     /// </summary>
-    /// <param name="dirname">Directory name to search in</param>
+    /// <param name="directoryName">Directory name to search in</param>
     /// <returns>Returns a new List of all found files</returns>
-    public List<AAPakFileInfo> GetFilesInDirectory(string dirname)
+    public List<AAPakFileInfo> GetFilesInDirectory(string directoryName)
     {
         var res = new List<AAPakFileInfo>();
-        dirname = dirname.ToLower();
-        foreach (AAPakFileInfo pfi in files)
+        directoryName = directoryName.ToLower();
+        foreach (AAPakFileInfo pfi in pakFiles.Values)
         {
             // extract dir name
             string n = string.Empty;
@@ -1278,9 +1279,8 @@ public class AAPak
             }
             catch
             {
-                n = string.Empty;
             }
-            if (n == dirname)
+            if (n == directoryName)
                 res.Add(pfi);
         }
         return res;
@@ -1292,24 +1292,21 @@ public class AAPak
     /// <param name="filename">filename inside the pak of the requested file</param>
     /// <param name="fileInfo">Returns the AAPakFile info of the requested file or nullAAPakFileInfo if it does not exist</param>
     /// <returns>Returns true if the file was found</returns>
-    public bool GetFileByName(string filename, ref AAPakFileInfo fileInfo)
+    public bool GetFileByName(string filename, out AAPakFileInfo fileInfo)
     {
         var fn = ToPakSlashes(filename);
-        foreach (AAPakFileInfo pfi in files)
+        var found = pakFiles.TryGetValue(fn, out fileInfo);
+        if (!found)
         {
-            if (pfi.name == fn)
-            {
-                fileInfo = pfi;
-                return true;
-            }
+            fileInfo = nullAAPakFileInfo;
         }
-        fileInfo = nullAAPakFileInfo; // return null file if it fails
-        return false;
+
+        return found;
     }
 
-    public bool GetFileByIndex(int fileIndex, ref AAPakFileInfo fileInfo)
+    public bool GetFileByIndex(int fileIndex, out AAPakFileInfo fileInfo)
     {
-        foreach (AAPakFileInfo pfi in files)
+        foreach (AAPakFileInfo pfi in pakFiles.Values)
         {
             if (pfi.entryIndexNumber == fileIndex)
             {
@@ -1333,15 +1330,7 @@ public class AAPak
     /// <returns>Returns true if the file was found</returns>
     public bool FileExists(string filename)
     {
-        var fn = ToPakSlashes(filename);
-        foreach (AAPakFileInfo pfi in files)
-        {
-            if (pfi.name == fn)
-            {
-                return true;
-            }
-        }
-        return false;
+        return GetFileByName(filename, out var _);
     }
 
     /// <summary>
@@ -1361,8 +1350,7 @@ public class AAPak
     /// <returns>Returns a SubStream of file within the pak</returns>
     public Stream ExportFileAsStream(string fileName)
     {
-        AAPakFileInfo file = nullAAPakFileInfo;
-        if (GetFileByName(fileName, ref file) == true)
+        if (GetFileByName(fileName, out var file) == true)
         {
             return new SubStream(_gpFileStream, file.offset, file.size);
         }
@@ -1379,8 +1367,7 @@ public class AAPak
     /// <returns>Returns a SubStream of file within the pak</returns>
     public Stream ExportFileAsStreamCloned(string fileName)
     {
-        AAPakFileInfo file = nullAAPakFileInfo;
-        if (GetFileByName(fileName, ref file) == true)
+        if (GetFileByName(fileName, out var file) == true)
         {
 #pragma warning disable CA2000 // Dispose objects before losing scope
             var fs = new FileStream(_gpFilePath, FileMode.Open, FileAccess.Read);
@@ -1390,7 +1377,6 @@ public class AAPak
         }
         return new MemoryStream();
     }
-
 
     /// <summary>
     /// Calculates and set the MD5 Hash of a given file
@@ -1427,7 +1413,6 @@ public class AAPak
         return true;
     }
 
-
     /// <summary>
     /// Try to find a file inside the Pak file base on a offset position inside the Pak file.
     /// Note: this only checks inside the used files and does not account for "deleted" files
@@ -1437,7 +1422,7 @@ public class AAPak
     /// <returns>Returns true if the location was found to be inside a valid file</returns>
     public bool FindFileByOffset(long offset, ref AAPakFileInfo fileInfo)
     {
-        foreach (AAPakFileInfo pfi in files)
+        foreach (AAPakFileInfo pfi in pakFiles.Values)
         {
             if ((offset >= pfi.offset) && (offset <= (pfi.offset + pfi.size + pfi.paddingSize)))
             {
@@ -1452,8 +1437,8 @@ public class AAPak
     /// <summary>
     /// Replaces a file's data with new data from a stream, can only be used if the current file location has enough space to hold the new data
     /// </summary>
-    /// <param name="pfi">Fileinfo of the file to replace</param>
-    /// <param name="sourceStream">Stream to replace the data with</param>
+    /// <param name="pfi"><see cref="FileInfo"/> of the file to replace</param>
+    /// <param name="sourceStream"><see cref="Stream"/> to replace the data with</param>
     /// <param name="modifyTime">Time to be used as a modified time stamp</param>
     /// <returns>Returns true on success</returns>
     public bool ReplaceFile(ref AAPakFileInfo pfi, Stream sourceStream, DateTime modifyTime)
@@ -1467,7 +1452,7 @@ public class AAPak
         if (sourceStream.Length > (pfi.size + pfi.paddingSize))
             return false;
 
-        // Save endpos for easy calculation later
+        // Save end position for easy calculation later
         long endPos = pfi.offset + pfi.size + pfi.paddingSize;
 
         try
@@ -1501,25 +1486,25 @@ public class AAPak
     }
 
     /// <summary>
-    /// Delete a file from pak. Behaves differenly depending on the paddingDeleteMode setting
+    /// Delete a file from pak. Behaves differently depending on the paddingDeleteMode setting
     /// </summary>
     /// <param name="pfi">AAPakFileInfo of the file that is to be deleted</param>
     /// <returns>Returns true on success</returns>
     public bool DeleteFile(AAPakFileInfo pfi)
     {
-        // When we detele a file from the pak, we remove the entry from the FileTable and expand the previous file's padding to take up the space
+        // When we delete a file from the pak, we remove the entry from the FileTable and expand the previous file's padding to take up the space
         if (readOnly)
             return false;
 
         if (paddingDeleteMode)
         {
-            AAPakFileInfo prevPfi = nullAAPakFileInfo;
-            if (FindFileByOffset(pfi.offset - 1, ref prevPfi))
+            AAPakFileInfo previousPfi = nullAAPakFileInfo;
+            if (FindFileByOffset(pfi.offset - 1, ref previousPfi))
             {
                 // If we have a previous file, expand it's padding area with the free space from this file
-                prevPfi.paddingSize += (int)pfi.size + pfi.paddingSize;
+                previousPfi.paddingSize += (int)pfi.size + pfi.paddingSize;
             }
-            files.Remove(pfi);
+            pakFiles.Remove(pfi.name);
         }
         else
         {
@@ -1536,7 +1521,7 @@ public class AAPak
 
             extraFiles.Add(eFile);
 
-            files.Remove(pfi);
+            pakFiles.Remove(pfi.name);
         }
         isDirty = true;
         return true;
@@ -1552,10 +1537,9 @@ public class AAPak
         if (readOnly)
             return false;
 
-        AAPakFileInfo pfi = nullAAPakFileInfo;
-        if (GetFileByName(filename, ref pfi))
+        if (GetFileByName(filename, out var file))
         {
-            return DeleteFile(pfi);
+            return DeleteFile(file);
         }
         else
         {
@@ -1572,7 +1556,7 @@ public class AAPak
     /// <param name="CreateTime">Time to use as initial file creation timestamp</param>
     /// <param name="ModifyTime">Time to use as last modified timestamp</param>
     /// <param name="autoSpareSpace">When set, tries to pre-allocate extra free space at the end of the file, this will be 25% of the filesize if used. If a "deleted file" is used, this parameter is ignored</param>
-    /// <param name="pfi">Returns the fileinfo of the newly created file</param>
+    /// <param name="pfi">Returns the file info of the newly created file</param>
     /// <returns>Returns true on success</returns>
     public bool AddAsNewFile(string filename, Stream sourceStream, DateTime CreateTime, DateTime ModifyTime, bool autoSpareSpace, out AAPakFileInfo pfi)
     {
@@ -1629,7 +1613,7 @@ public class AAPak
         }
 
         // Add to files list
-        files.Add(newFile);
+        pakFiles.Add(newFile.name, newFile);
 
         isDirty = true;
 
@@ -1670,11 +1654,11 @@ public class AAPak
 
         bool addAsNew = true;
         // Try to find the existing file
-        if (GetFileByName(filename, ref pfi))
+        if (GetFileByName(filename, out pfi))
         {
             var reservedSizeMax = pfi.size + pfi.paddingSize;
             addAsNew = (sourceStream.Length > reservedSizeMax);
-            // Bugfix: If we have inssuficient space, make sure to delete the old file first as well
+            // Bugfix: If we have insufficient space, make sure to delete the old file first as well
             if (addAsNew)
             {
                 DeleteFile(pfi);
@@ -1696,7 +1680,7 @@ public class AAPak
     /// </summary>
     /// <param name="sourceFileName">Filename of the source file to be added</param>
     /// <param name="asFileName">Filename inside the Pak file to use</param>
-    /// <param name="autoSpareSpace">When set, tries to pre-allocate extra free space at the end of the file, this will be 25% of the filesize if used. If a "deleted file" is used, this parameter is ignored</param>
+    /// <param name="autoSpareSpace">When set, tries to pre-allocate extra free space at the end of the file, this will be 25% of the file size if used. If a "deleted file" is used, this parameter is ignored</param>
     /// <returns>Returns true on success</returns>
     public bool AddFileFromFile(string sourceFileName, string asFileName, bool autoSpareSpace)
     {
@@ -1714,7 +1698,7 @@ public class AAPak
     /// Convert a stream into a string
     /// </summary>
     /// <param name="stream">Source stream</param>
-    /// <returns>String value of the data isnide the stream</returns>
+    /// <returns>String value of the data inside the stream</returns>
     static public string StreamToString(Stream stream)
     {
         stream.Position = 0;

@@ -61,7 +61,6 @@ public class ItemManager : Singleton<ItemManager>
     private Dictionary<uint, List<LootPackDroppingNpc>> _lootPackDroppingNpc;
     private Dictionary<uint, List<LootPackConvertFish>> _lootPackConvertFish;
     private Dictionary<int, GradeDistributions> _itemGradeDistributions;
-    private Dictionary<uint, List<Item>> _lootDropItems;
 
     // ItemLookConvert
     private Dictionary<uint, ItemLookConvert> _itemLookConverts;
@@ -100,11 +99,6 @@ public class ItemManager : Singleton<ItemManager>
         return _grades.GetValueOrDefault(grade);
     }
 
-    public bool RemoveLootDropItems(uint objId)
-    {
-        return _lootDropItems.Remove(objId);
-    }
-
     public Holdable GetHoldable(uint id)
     {
         return _holdables.GetValueOrDefault(id);
@@ -125,9 +119,9 @@ public class ItemManager : Singleton<ItemManager>
         return _enchantingSupports.GetValueOrDefault(itemId);
     }
 
-    private List<LootPackDroppingNpc> GetLootPackIdByNpcId(uint npcId)
+    public List<LootPackDroppingNpc> GetLootPackIdByNpcId(uint npcId)
     {
-        return _lootPackDroppingNpc.TryGetValue(npcId, out var value) ? value : new List<LootPackDroppingNpc>();
+        return _lootPackDroppingNpc.TryGetValue(npcId, out var value) ? value : [];
     }
 
     /// <summary>
@@ -137,130 +131,12 @@ public class ItemManager : Singleton<ItemManager>
     /// <returns></returns>
     private List<LootPackConvertFish> GetLootPackIdByItemId(uint itemId)
     {
-        return _lootPackConvertFish.TryGetValue(itemId, out var value) ? value : new List<LootPackConvertFish>();
-    }
-
-    public List<Item> GetLootDropItems(uint npcId)
-    {
-        return _lootDropItems.TryGetValue(npcId, out var item) ? item : new List<Item>();
+        return _lootPackConvertFish.TryGetValue(itemId, out var value) ? value : [];
     }
 
     public List<ItemTemplate> GetAllItems()
     {
         return _templates.Values.ToList();
-    }
-
-    public List<Item> CreateLootDropItems(uint npcId, BaseUnit killer)
-    {
-        var items = GetLootDropItems(npcId);
-
-        // Already generated?
-        if (items.Count > 0)
-        {
-            return items;
-        }
-
-        // Check if NPC actually exists
-        var unit = WorldManager.Instance.GetNpc(npcId);
-        if (unit == null)
-        {
-            return items;
-        }
-
-        // Get drop lists
-        var lootPackDroppingNpcs = GetLootPackIdByNpcId(unit.TemplateId);
-        if (lootPackDroppingNpcs.Count <= 0)
-        {
-            return items;
-        }
-
-        // Calculate loot rates
-        var lootDropRate = 1f;
-        var lootGoldRate = 1f;
-
-        // Check all people with a claim on the NPC
-
-        var eligiblePlayers = new HashSet<Character>();
-        if (unit.CharacterTagging.TagTeam != 0)
-        {
-            //A team has tagging rights
-            var team = TeamManager.Instance.GetActiveTeam(unit.CharacterTagging.TagTeam);
-            if (team != null)
-            {
-                foreach (var member in team.Members)
-                {
-                    if (member == null || member.Character == null)
-                        continue;
-
-                    var distance = member.Character.Transform.World.Position - unit.Transform.World.Position;
-                    if (distance.Length() <= 200)
-                    {
-                        //This player is in range of the mob and in a group with tagging rights.
-                        eligiblePlayers.Add(member.Character);
-                    }
-                }
-            }
-            else if (unit.CharacterTagging.Tagger != null)
-            {
-                //A player has tag rights
-                eligiblePlayers.Add(unit.CharacterTagging.Tagger);
-            }
-
-        }
-        else if (unit.CharacterTagging.Tagger != null)
-        {
-            //A player has tag rights
-            eligiblePlayers.Add(unit.CharacterTagging.Tagger);
-        }
-        if (eligiblePlayers.Count > 0)
-        {
-            var maxDropRateMul = -100f;
-            var maxLootGoldMul = -100f;
-
-            foreach (var pl in eligiblePlayers)
-            {
-
-                var aggroDropMul = (100f + pl.DropRateMul) / 100f;
-                var aggroGoldMul = (100f + pl.LootGoldMul) / 100f;
-                if (aggroDropMul > maxDropRateMul)
-                    maxDropRateMul = aggroDropMul;
-                if (aggroGoldMul > maxLootGoldMul)
-                    maxLootGoldMul = aggroGoldMul;
-
-
-
-            }
-
-            lootDropRate = maxDropRateMul;
-            lootGoldRate = maxLootGoldMul;
-
-
-
-        }
-        else if (killer is Character player)
-        {
-            lootDropRate *= (100f + player.DropRateMul) / 100f;
-            lootGoldRate *= (100f + player.LootGoldMul) / 100f;
-            Logger.Info($"Unit killed without aggro: {unit.ObjId} ({unit.TemplateId}) by {player.Name}");
-        }
-
-        // Base ID used for identifying the loot
-        var baseId = ((ulong)unit.ObjId << 32) + 65536;
-
-        // Generate the actual loot
-        foreach (var lootPackDropping in lootPackDroppingNpcs)
-        {
-            var lootPack = LootGameData.Instance.GetPack(lootPackDropping.LootPackId);
-            if (lootPack == null)
-                continue;
-            items = lootPack.GenerateNpcPackItems(ref baseId, lootDropRate, lootGoldRate);
-            if (!_lootDropItems.TryAdd(npcId, items))
-                _lootDropItems[npcId].AddRange(items);
-        }
-
-        if (!_lootDropItems.TryGetValue(npcId, out items))
-            items = new List<Item>();
-        return items;
     }
 
     public List<Item> GetLootConvertFish(uint templateId)
@@ -308,80 +184,6 @@ public class ItemManager : Singleton<ItemManager>
         }
 
         return items;
-    }
-
-    /// <summary>
-    /// Initiate Loot item (loot all items / open loot selection window)
-    /// </summary>
-    /// <param name="character"></param>
-    /// <param name="id"></param>
-    /// <param name="lootAll"></param>
-    /// <returns>True if everything was looted, false if not all could be looted</returns>
-    public bool TookLootDropItems(Character character, uint id, bool lootAll)
-    {
-        // TODO: Bug fix for the following; 
-        /*
-         * Have full inventory 
-         * -> Open Loot (G) 
-         * -> press (F) to loot all while open (fail, bag full) 
-         * -> free up bag space 
-         * -> click for manual loot doesn't trigger a new packet. so it won't loot
-         * Note: Re-opening the loot window lets you loot the remaining items
-        */
-        var isDone = true;
-        var lootDropItems = Instance.GetLootDropItems(id);
-        if (lootAll)
-        {
-            for (var i = lootDropItems.Count - 1; i >= 0; --i)
-            {
-                isDone &= TookLootDropItem(character, lootDropItems, lootDropItems[i], lootDropItems[i].Count);
-            }
-            if (lootDropItems.Count > 0)
-                character.SendPacket(new SCLootBagDataPacket(lootDropItems, true));
-        }
-        else
-        {
-            isDone = lootDropItems.Count <= 0;
-            character.SendPacket(new SCLootBagDataPacket(lootDropItems, false));
-        }
-        return isDone;
-    }
-
-    /// <summary>
-    /// Takes lootDropItem from LootDropItems and adds them to character's Bag
-    /// </summary>
-    /// <param name="character"></param>
-    /// <param name="lootDropItems"></param>
-    /// <param name="lootDropItem"></param>
-    /// <param name="count"></param>
-    /// <returns>Returns false if the item could not be picked up.</returns>
-    public bool TookLootDropItem(Character character, List<Item> lootDropItems, Item lootDropItem, int count)
-    {
-        var objId = (uint)(lootDropItem.Id >> 32);
-        if (lootDropItem.TemplateId == Item.Coins)
-        {
-            character.AddMoney(SlotType.Inventory, lootDropItem.Count);
-        }
-        else
-        {
-            if (!character.Inventory.Bag.AcquireDefaultItem(ItemTaskType.Loot, lootDropItem.TemplateId,
-                count > lootDropItem.Count ? lootDropItem.Count : count, lootDropItem.Grade))
-            {
-                // character.SendErrorMessage(ErrorMessageType.BagFull);
-                character.SendPacket(new SCLootItemFailedPacket(ErrorMessageType.BagFull, lootDropItem.Id, lootDropItem.TemplateId));
-                return false;
-            }
-        }
-
-        lootDropItems.Remove(lootDropItem);
-        character.SendPacket(new SCLootItemTookPacket(lootDropItem.TemplateId, lootDropItem.Id, lootDropItem.Count));
-
-        if (lootDropItems.Count <= 0)
-        {
-            RemoveLootDropItems(objId);
-            character.BroadcastPacket(new SCLootableStatePacket(objId, false), true);
-        }
-        return true;
     }
 
     public GradeDistributions GetGradeDistributions(byte id)
@@ -447,7 +249,7 @@ public class ItemManager : Singleton<ItemManager>
 
     public List<uint> GetItemIdsFromDoodad(uint doodadId)
     {
-        return _itemDoodadTemplates.TryGetValue(doodadId, out var template) ? template.ItemIds : new List<uint>();
+        return _itemDoodadTemplates.TryGetValue(doodadId, out var template) ? template.ItemIds : [];
     }
 
     public ItemTemplate GetItemTemplateFromItemId(uint itemId)
@@ -543,7 +345,7 @@ public class ItemManager : Singleton<ItemManager>
     {
         if (_itemUnitModifiers.TryGetValue(itemId, out var modifiers))
             return modifiers;
-        return new List<BonusTemplate>();
+        return [];
     }
 
     public ArmorGradeBuff GetArmorGradeBuff(ArmorType type, ItemGrade grade)
@@ -573,7 +375,9 @@ public class ItemManager : Singleton<ItemManager>
         if (item == null)
             return null;
 
-        item.Grade = grade;
+        // If item already has a default generated grade, then do not override it (used for graded loot like TreasureMaps)
+        if (item.Grade <= 0)
+            item.Grade = grade;
 
         if (item.Template.BindType == ItemBindType.BindOnPickup) // Bind on pickup.
             item.SetFlag(ItemFlag.SoulBound);
@@ -610,36 +414,36 @@ public class ItemManager : Singleton<ItemManager>
         if (_loaded)
             return;
 
-        _grades = new Dictionary<int, GradeTemplate>();
-        _holdables = new Dictionary<uint, Holdable>();
-        _wearables = new Dictionary<uint, Wearable>();
-        _wearableKinds = new Dictionary<uint, WearableKind>();
-        _wearableSlots = new Dictionary<uint, WearableSlot>();
-        _modifiers = new Dictionary<uint, AttributeModifiers>();
-        _templates = new Dictionary<uint, ItemTemplate>();
-        _enchantingCosts = new Dictionary<uint, EquipSlotEnchantingCost>();
-        _gradesOrdered = new Dictionary<int, GradeTemplate>();
-        _enchantingSupports = new Dictionary<uint, ItemGradeEnchantingSupport>();
-        _socketChance = new Dictionary<uint, uint>();
-        _itemCapScales = new Dictionary<uint, ItemCapScale>();
-        _itemLookConverts = new Dictionary<uint, ItemLookConvert>();
-        _holdableItemLookConverts = new Dictionary<uint, uint>();
-        _wearableItemLookConverts = new Dictionary<uint, uint>();
-        _lootPackDroppingNpc = new Dictionary<uint, List<LootPackDroppingNpc>>();
-        _lootPackConvertFish = new Dictionary<uint, List<LootPackConvertFish>>();
-        _itemGradeDistributions = new Dictionary<int, GradeDistributions>();
+        _grades = [];
+        _holdables = [];
+        _wearables = [];
+        _wearableKinds = [];
+        _wearableSlots = [];
+        _modifiers = [];
+        _templates = [];
+        _enchantingCosts = [];
+        _gradesOrdered = [];
+        _enchantingSupports = [];
+        _socketChance = [];
+        _itemCapScales = [];
+        _itemLookConverts = [];
+        _holdableItemLookConverts = [];
+        _wearableItemLookConverts = [];
+        _lootPackDroppingNpc = [];
+        _lootPackConvertFish = [];
+        _itemGradeDistributions = [];
         /*
         _lootPacks = new Dictionary<uint, List<Loot>>();
         _lootGroups = new Dictionary<uint, List<LootGroups>>();
+        _lootDropItems = [];
         */
-        _lootDropItems = new Dictionary<uint, List<Item>>();
-        _itemDoodadTemplates = new Dictionary<uint, ItemDoodadTemplate>();
-        _itemProcTemplates = new Dictionary<uint, ItemProcTemplate>();
-        _armorGradeBuffs = new Dictionary<ArmorType, Dictionary<ItemGrade, ArmorGradeBuff>>();
-        _itemUnitModifiers = new Dictionary<uint, List<BonusTemplate>>();
-        _equipItemSets = new Dictionary<uint, EquipItemSet>();
-        _defaultDyeIds = new Dictionary<uint, uint>();
-        _itemSets = new Dictionary<uint, ItemSet>();
+        _itemDoodadTemplates = [];
+        _itemProcTemplates = [];
+        _armorGradeBuffs = [];
+        _itemUnitModifiers = [];
+        _equipItemSets = [];
+        _defaultDyeIds = [];
+        _itemSets = [];
         _config = new ItemConfig();
         ItemTimerLock = new();
         LastTimerCheck = DateTime.UtcNow;
@@ -1175,6 +979,9 @@ public class ItemManager : Singleton<ItemManager>
             var sheetMusicItemTemplate = new MusicSheetTemplate { Id = Item.SheetMusic };
             _templates.Add(sheetMusicItemTemplate.Id, sheetMusicItemTemplate);
 
+            var treasureMapItemTemplate = new TreasureMapTemplate { Id = Item.TreasureMapWithCoordinates };
+            _templates.Add(treasureMapItemTemplate.Id, treasureMapItemTemplate);
+
             using (var command = connection.CreateCommand())
             {
                 command.CommandText = "SELECT * FROM items";
@@ -1436,7 +1243,7 @@ public class ItemManager : Singleton<ItemManager>
                             lootPackDroppingNpc = value;
                         else
                         {
-                            lootPackDroppingNpc = new List<LootPackDroppingNpc>();
+                            lootPackDroppingNpc = [];
                             _lootPackDroppingNpc.Add(template.NpcId, lootPackDroppingNpc);
                         }
 
@@ -1519,7 +1326,7 @@ public class ItemManager : Singleton<ItemManager>
                         };
 
                         if (!_itemUnitModifiers.ContainsKey(itemId))
-                            _itemUnitModifiers.Add(itemId, new List<BonusTemplate>());
+                            _itemUnitModifiers.Add(itemId, []);
                         _itemUnitModifiers[itemId].Add(template);
                     }
                 }
@@ -1542,7 +1349,7 @@ public class ItemManager : Singleton<ItemManager>
                         };
 
                         if (!_armorGradeBuffs.ContainsKey(armorGradeBuff.ArmorType))
-                            _armorGradeBuffs.Add(armorGradeBuff.ArmorType, new Dictionary<ItemGrade, ArmorGradeBuff>());
+                            _armorGradeBuffs.Add(armorGradeBuff.ArmorType, []);
 
                         _armorGradeBuffs[armorGradeBuff.ArmorType].TryAdd(armorGradeBuff.ItemGrade, armorGradeBuff);
                     }
@@ -1701,7 +1508,6 @@ public class ItemManager : Singleton<ItemManager>
                 }
             }
         }
-
 
         using (var command = connection.CreateCommand())
         {
@@ -1914,12 +1720,12 @@ public class ItemManager : Singleton<ItemManager>
             return;
 
         Logger.Info("Loading user items ...");
-        _allItems = new Dictionary<ulong, Item>();
-        _allPersistentContainers = new Dictionary<ulong, ItemContainer>();
+        _allItems = [];
+        _allPersistentContainers = [];
 
         // No lock needed here since this is the first and only time it gets assigned a new list
         // ReSharper disable once InconsistentlySynchronizedField
-        _removedItems = new List<ulong>();
+        _removedItems = [];
 
         using (var connection = MySQL.CreateConnection())
         using (var command = connection.CreateCommand())
@@ -2283,7 +2089,7 @@ public class ItemManager : Singleton<ItemManager>
         if (item.Template.BindType == ItemBindType.BindOnUnpack)
             item.SetFlag(ItemFlag.SoulBound);
         var updateItemTask = new ItemUpdateSecurity(item, (byte)item.ItemFlags, item.HasFlag(ItemFlag.Secure), item.HasFlag(ItemFlag.Secure), item.ItemFlags.HasFlag(ItemFlag.Unpacked));
-        character.SendPacket(new SCItemTaskSuccessPacket(ItemTaskType.ItemTaskThistimeUnpack, updateItemTask, new List<ulong>()));
+        character.SendPacket(new SCItemTaskSuccessPacket(ItemTaskType.ItemTaskThistimeUnpack, updateItemTask, []));
         if ((item.Template is EquipItemTemplate { ChargeLifetime: > 0 }))
             character.SendPacket(new SCSyncItemLifespanPacket(true, item.Id, item.TemplateId, item.UnpackTime));
         return true;

@@ -33,6 +33,8 @@ using AAEmu.Game.Utils;
 
 using NLog;
 
+#pragma warning disable IDE0079 // Remove unnecessary suppression
+
 namespace AAEmu.Game.Models.Game.Skills;
 
 public class Skill
@@ -55,14 +57,14 @@ public class Skill
 
     public Skill()
     {
-        HitTypes = new Dictionary<uint, SkillHitType>();
+        HitTypes = [];
     }
 
     public Skill(SkillTemplate template, Unit owner = null)
     {
         if (template == null)
             return;
-        HitTypes = new Dictionary<uint, SkillHitType>();
+        HitTypes = [];
         Id = template.Id;
         Template = template;
         if (owner != null)
@@ -94,7 +96,7 @@ public class Skill
         var character = caster as Character;
 
         unit.ConditionChance = true;
-
+        
         var requirementResult = UnitRequirementsGameData.Instance.CanUseSkill(Template, caster, casterCaster);
         if (requirementResult.ResultKey != SkillResultKeys.ok)
         {
@@ -1178,6 +1180,20 @@ public class Skill
         if (packets.Packets.Count > 0)
             caster.BroadcastPacket(packets, true);
 
+        // Hack to consume TreasureMap items (don't know how else to add this)
+        if ((player != null) && (Template.Id == SkillsEnum.DigUpTreasureChestMarkedOnMap))
+        {
+            var treasureMapToUse = UnitRequirementsGameData.Instance.GetTreasureMapWithCoordinatesNearbyItem(player, 5.0);
+            if (treasureMapToUse != null)
+            {
+                consumedItems.Add((treasureMapToUse, 1));
+            }
+            else
+            {
+                Logger.Error($"Unable to find a treasure map to take from user {player.Name} ({player.Id}) when digging up treasure");
+            }
+        }
+
         if (!Cancelled)
         {
             if (player != null)
@@ -1209,10 +1225,21 @@ public class Skill
 
         if (caster is Character character)
         {
-            if (Template.ConsumeLaborPower > 0 && !Cancelled && character.LaborPower >= Template.ConsumeLaborPower)
+            var laborCost = Template.ConsumeLaborPower;
+            // Adjust labor cost if needed
+            if (character.Actability.Actabilities.TryGetValue((byte)Template.ActabilityGroupId, out var actAbility))
+            {
+                laborCost = (int)Math.Round(laborCost * actAbility.GetLaborCostMultiplier());
+            }
+
+            // Lower cap at 1
+            if ((Template.ConsumeLaborPower > 0) && (laborCost < 1))
+                laborCost = 1;
+            
+            if (laborCost > 0 && !Cancelled && character.LaborPower >= laborCost)
             {
                 // Consume labor only if there is enough of it
-                character.ChangeLabor((short)-Template.ConsumeLaborPower, Template.ActabilityGroupId);
+                character.ChangeLabor((short)-laborCost, Template.ActabilityGroupId);
             }
 
             // Add vocation where needed

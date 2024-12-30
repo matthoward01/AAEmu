@@ -167,9 +167,9 @@ public class BuffTemplate
 
     public BuffTemplate()
     {
-        TickEffects = new List<TickEffect>();
-        Bonuses = new List<BonusTemplate>();
-        DynamicBonuses = new List<DynamicBonusTemplate>();
+        TickEffects = [];
+        Bonuses = [];
+        DynamicBonuses = [];
     }
 
     public void Apply(BaseUnit caster, SkillCaster casterObj, BaseUnit target, SkillCastTarget targetObj,
@@ -235,6 +235,11 @@ public class BuffTemplate
                 RadarManager.Instance.RegisterForPublicTransport(character, TransferTelescopeRange);
             if (TelescopeRange > 0)
                 RadarManager.Instance.RegisterForShips(character, TelescopeRange);
+            if (character.Buffs.CheckBuff((uint)BuffConstants.Dash))
+            {
+                var template = new ManaRegenTemplate(character, buff.Template.Tick, buff.Template.TickLevelManaCost, character.Level);
+                ManaRegenManager.Instance.Register(character, template);
+            }
         }
     }
 

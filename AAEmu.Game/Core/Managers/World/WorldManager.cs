@@ -202,10 +202,10 @@ public class WorldManager : Singleton<WorldManager>, IWorldManager
         if (_loaded)
             return;
 
-        _worlds = new Dictionary<uint, InstanceWorld>();
-        _worldIdByZoneId = new Dictionary<uint, uint>();
-        _worldInteractionGroups = new Dictionary<uint, WorldInteractionGroup>();
-        _zonesByWorldId = new Dictionary<uint, List<uint>>();
+        _worlds = [];
+        _worldIdByZoneId = [];
+        _worldInteractionGroups = [];
+        _zonesByWorldId = [];
 
         Logger.Info("Loading world data...");
 
@@ -217,8 +217,10 @@ public class WorldManager : Singleton<WorldManager>, IWorldManager
         {
             throw new OperationCanceledException("No client worlds data has been found, please check the readme.txt file inside the ClientData folder for more info.");
         }
-        var worldNames = new List<string>();
-        worldNames.Add("main_world"); // Make sure main_world is the first even if it wouldn't exist
+        var worldNames = new List<string>
+        {
+            "main_world" // Make sure main_world is the first even if it wouldn't exist
+        };
 
         // Grab world_spawns.json info
         var spawnPositionFile = Path.Combine(FileManager.AppPath, "Data", "Worlds", "world_spawns.json");
@@ -280,7 +282,7 @@ public class WorldManager : Singleton<WorldManager>, IWorldManager
                     _worldIdByZoneId.Add(zoneKey, id);
 
                     if (!_zonesByWorldId.ContainsKey(id))
-                        _zonesByWorldId.Add(world.Id, new List<uint>());
+                        _zonesByWorldId.Add(world.Id, []);
                     _zonesByWorldId[id].Add(zoneKey);
                 }
 
@@ -576,7 +578,7 @@ public class WorldManager : Singleton<WorldManager>, IWorldManager
         }
     }
 
-    public InstanceWorld GetWorld(uint worldId)
+    public virtual InstanceWorld GetWorld(uint worldId)
     {
         if (_worlds.TryGetValue(worldId, out var res))
             return res;
@@ -608,7 +610,7 @@ public class WorldManager : Singleton<WorldManager>, IWorldManager
     {
         if (_zonesByWorldId.TryGetValue(worldId, out var value))
             return value;
-        return new List<uint>();
+        return [];
     }
 
     public uint GetZoneId(uint worldId, float x, float y)
@@ -735,20 +737,17 @@ public class WorldManager : Singleton<WorldManager>, IWorldManager
 
     public GameObject GetGameObject(uint objId)
     {
-        _objects.TryGetValue(objId, out var ret);
-        return ret;
+        return _objects.GetValueOrDefault(objId);
     }
 
     public BaseUnit GetBaseUnit(uint objId)
     {
-        _baseUnits.TryGetValue(objId, out var ret);
-        return ret;
+        return _baseUnits.GetValueOrDefault(objId);
     }
 
     public Doodad GetDoodad(uint objId)
     {
-        _doodads.TryGetValue(objId, out var ret);
-        return ret;
+        return _doodads.GetValueOrDefault(objId);
     }
 
     public Doodad GetDoodadByDbId(uint dbId)
@@ -1397,5 +1396,23 @@ public class WorldManager : Singleton<WorldManager>, IWorldManager
         //{
         //    Logger.Info($"[Dungeon] could not delete the list of NpcEventSpawners for dungeon id={worldId}!");
         //}
+    }
+
+    /// <summary>
+    /// Get a list of NPCs that have loot and are past the "make public" time
+    /// </summary>
+    /// <returns></returns>
+    public HashSet<Npc> GetNpcsToMakePublicLooting()
+    {
+        HashSet<Npc> temp;
+        lock (_npcs)
+        {
+            temp = [.. _npcs.Values];
+        }
+
+        var res = new HashSet<Npc>();
+        foreach (var item in temp.Where(item => item.LootingContainer.CanMakePublic()))
+            res.Add(item);
+        return res;
     }
 }

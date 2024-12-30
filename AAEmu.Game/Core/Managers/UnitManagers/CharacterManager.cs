@@ -46,13 +46,13 @@ public class CharacterManager : Singleton<CharacterManager>
 
     public CharacterManager()
     {
-        _templates = new Dictionary<byte, CharacterTemplate>();
-        _abilityItems = new Dictionary<byte, AbilityItems>();
-        _expands = new Dictionary<int, List<Expand>>();
-        _appellations = new Dictionary<uint, AppellationTemplate>();
-        _actabilities = new Dictionary<uint, ActabilityTemplate>();
-        _expertLimits = new Dictionary<int, ExpertLimit>();
-        _expandExpertLimits = new Dictionary<int, ExpandExpertLimit>();
+        _templates = [];
+        _abilityItems = [];
+        _expands = [];
+        _appellations = [];
+        _actabilities = [];
+        _expertLimits = [];
+        _expandExpertLimits = [];
     }
 
     public CharacterTemplate GetTemplate(Race race, Gender gender)
@@ -275,7 +275,7 @@ public class CharacterManager : Singleton<CharacterManager>
                         expand.CurrencyId = reader.GetInt32("currency_id");
 
                         if (!_expands.TryGetValue(expand.Step, out var value))
-                            _expands.Add(expand.Step, new List<Expand> { expand });
+                            _expands.Add(expand.Step, [expand]);
                         else
                             value.Add(expand);
                     }
@@ -400,12 +400,10 @@ public class CharacterManager : Singleton<CharacterManager>
         Logger.Info("Loaded {0} character templates", _templates.Count);
     }
 
-    public static void PlayerRoll(Character Self, int max)
+    public static void PlayerRoll(Character player, int max)
     {
-
         var roll = Rand.Next(1, max);
-        Self.BroadcastPacket(new SCChatMessagePacket(ChatType.System, string.Format(Self.Name + " rolled " + roll.ToString() + ".")), true);
-
+        player.BroadcastPacket(new SCChatMessagePacket(ChatType.System, $"{player.Name} rolled {roll}."), true);
     }
 
     public int GetEffectiveAccessLevel(Character character)

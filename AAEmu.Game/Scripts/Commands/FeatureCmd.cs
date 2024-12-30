@@ -10,7 +10,7 @@ namespace AAEmu.Game.Scripts.Commands;
 
 public class FeatureCmd : SubCommandBase, ICommand, ICommandV2
 {
-    public string[] CommandNames { get; set; } = new string[] { "feature" };
+    public string[] CommandNames { get; set; } = ["feature"];
 
     public FeatureCmd()
     {
@@ -24,7 +24,7 @@ public class FeatureCmd : SubCommandBase, ICommand, ICommandV2
 
     public void OnLoad()
     {
-        string[] name = { "feature", "fset", "fs" };
+        string[] name = ["feature", "fset", "fs"];
         CommandManager.Instance.Register(name, this);
     }
 
